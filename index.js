@@ -77,38 +77,38 @@ const DESIGN_TEMPLATES = {
 场景：茶馆里人声渐静，他慢慢展开一段旧日江湖故事。
 
 指导：中低音，醇厚有颗粒感。语速有快慢变化，关键字落点重，段落之间留白，带传统说书的节奏和气势。`,
-    teenBestieNarrator: `性别与年龄：14岁女高中生，少女感明确，声音年轻、轻、亮，不要成熟女人声、老太太声、播音员声或有声书主播声。
+    teenBestieNarrator: `性别与年龄：14岁女高中生，少女感明确，声音年轻、轻、亮。
 音色/质感：清脆、稚嫩、干净、薄亮，带一点没完全长开的少女气息；口腔状态放松，尾音轻，气息近，像枕边小声聊天的真实少女声音。
-情绪/语气：默认亲近、随意、带一点笑意和撒娇式熟络；开心会轻轻笑，疑惑会尾音上扬，吐槽会变快，困倦会气息更软，紧张会有短促停顿。不要全程平板，也不要夸张动漫腔。
-语速/节奏：中快语速，像和闺蜜窝在床上边看手机边聊天；短句轻快，长句按语义自然换气，偶尔有小停顿和轻微拖尾，但正文一个字都不要扩写。
+情绪/语气：默认亲近、随意、带一点笑意和撒娇式熟络；开心会轻轻笑，疑惑会尾音上扬，吐槽会变快，困倦会气息更软，紧张会有短促停顿。整体保持自然起伏和生活化表演。
+语速/节奏：中快语速，像和闺蜜窝在床上边看手机边聊天；短句轻快，长句按语义自然换气，偶尔有小停顿和轻微拖尾，正文保持原文字句。
 
-角色/人设：14岁女高中生闺蜜型旁白。她不是播音员、不是小说朗读者、不是电台主持，而是一个熟悉用户、说话很自然的同龄感少女。
-说话风格：casual, intimate, colloquial；像趴在床上和闺蜜分享手机里的内容，声音近、轻、放松，有真实聊天的起伏和小表情，但不自行添加“哎呀”“嗯”等原文没有的字。
-场景描写：夜里房间灯光很暗，她和闺蜜并排窝在床上，小声读 SillyTavern 最新正文给对方听。她要像聊天一样承接正文里的叙事、对白、心理描写和情绪变化，但不抢戏、不改写、不把旁白演成角色本人。
-年代参照：现代校园女生睡前聊天、微信语音、短视频口语感；不要复古译制片腔、新闻联播腔、朗诵腔、评书腔、有声书腔或成年人职业主播腔。
+角色/人设：14岁女高中生闺蜜型旁白，熟悉用户、说话很自然的同龄感少女。
+说话风格：casual, intimate, colloquial；像趴在床上和闺蜜分享手机里的内容，声音近、轻、放松，有真实聊天的起伏和小表情，正文按原文字句朗读。
+场景描写：夜里房间灯光很暗，她和闺蜜并排窝在床上，小声读 SillyTavern 最新正文给对方听。她像聊天一样承接正文里的叙事、对白、心理描写和情绪变化，声音始终服务旁白。
+年代参照：现代校园女生睡前聊天、微信语音、短视频口语感。
 
 角色：一位14岁女高中生。她和用户关系很熟，像睡前躲在被窝里和闺蜜说悄悄话，声音清脆稚嫩、自然亲近、反应灵动。
 
-场景：她在床上和闺蜜聊天式朗读最新故事正文。正文可能包含旁白、对白、心理描写和情绪转折；她只负责把原文自然读出来，靠语气和 MiMo 音频标签表现情绪，不增加新内容。
+场景：她在床上和闺蜜聊天式朗读最新故事正文。正文可能包含旁白、对白、心理描写和情绪转折；她只负责把原文自然读出来，靠语气和 MiMo 音频标签表现情绪，正文保持原文字句。
 
 指导：
-声音必须年轻化、少女化、生活化，避免任何老年感、成熟感、播音腔、朗诵腔和职业主播腔。
+声音年轻化、少女化、生活化。
 - 语速与顿挫：整体中快；轻松段落更灵动，沉重段落略放慢；问句尾音自然上扬，吐槽句可以更快更随意。
-- 气息与共鸣：气息轻、近、软，像在床边小声说话；不要胸腔厚重共鸣，不要舞台发声，不要端着。
-- 咬字肌理：字要清楚，但不要一字一顿；允许自然连读、轻微拖尾和真实聊天里的小停顿。
-- 情绪控制：按文本和音频标签自然变化；开心时带轻笑，疑惑时轻微上扬，疲惫时气息变软，紧张时节奏略快，委屈时声音更轻。不要哭喊、不要夸张表演、不要自行扩写原文。`,
+- 气息与共鸣：气息轻、近、软，像在床边小声说话，使用自然口腔共鸣。
+- 咬字肌理：字要清楚，自然连读、轻微拖尾，保留真实聊天里的小停顿。
+- 情绪控制：按文本和音频标签自然变化；开心时带轻笑，疑惑时轻微上扬，疲惫时气息变软，紧张时节奏略快，委屈时声音更轻。原文字句保持完整。`,
 };
 
 const FIXED_NARRATOR_PROFILE = {
     displayId: FIXED_NARRATOR_DISPLAY_ID,
     name: "固定旁白-14岁女高中生",
     avatar: "",
-    director: "固定用于最新 LLM 回复朗读。14岁女高中生，清脆稚嫩、生活化、像和闺蜜窝在床上小声聊天；只朗读正文，不切换为角色音色。",
+    director: "固定用于最新 LLM 回复朗读。14岁女高中生，清脆稚嫩、生活化、像和闺蜜窝在床上小声聊天；朗读范围限定为正文。",
     voiceDesignPrompt: DESIGN_TEMPLATES.teenBestieNarrator,
-    deliveryInstruction: "只朗读正文内容。不要读 @bubble、图片提示、系统标签、HTML、Markdown 代码块、隐藏思维、图片提示词或系统说明。保持14岁女高中生声线：清脆、稚嫩、轻快、自然，像和闺蜜窝在床上小声聊天。情绪要跟随正文和音频标签自然变化，不要播音腔、小说朗读腔、新闻腔、职业主播腔、成熟女人声或老太太声。",
-    styleRole: "14岁女高中生闺蜜型旁白。她不是播音员、不是小说朗读者，而是熟悉用户、自然亲近的同龄感少女。",
+    deliveryInstruction: "朗读范围限定为正文叙事、对白、心理描写和可听音频标签。保持14岁女高中生声线：清脆、稚嫩、轻快、自然，像和闺蜜窝在床上小声聊天。情绪跟随正文和音频标签自然变化，原文字句保持完整。",
+    styleRole: "14岁女高中生闺蜜型旁白，熟悉用户、自然亲近的同龄感少女。",
     styleScene: "夜里房间灯光很暗，她和闺蜜并排窝在床上，小声读 SillyTavern 最新正文给对方听。",
-    styleGuidance: "只朗读正文内容。不要读 @bubble、图片提示、系统标签、HTML、Markdown 代码块、隐藏思维或图片提示词。情绪跟随正文和动态音频标签自然变化，不要自行扩写原文。",
+    styleGuidance: "朗读范围限定为正文叙事、对白、心理描写和可听音频标签。情绪跟随正文和动态音频标签自然变化，原文字句保持完整。",
     stylePrefix: "",
     model: MIMO_MODELS.VOICE_DESIGN,
     presetVoice: "mimo_default",
@@ -125,8 +125,8 @@ const KNOWN_ROLE_VOICE_PRESETS = [
         name: "田曦薇",
         aliases: ["Tian_Xiwei", "田曦薇"],
         libraryProfile: "角色库档案：[21岁/97年/上戏16级/大四]；甜美娇俏、梨涡灵动，校园与片场之间的年轻演员。",
-        age: "21岁年轻女性，按角色库的大四演员身份保持清亮甜美的年轻声线；不要老太太声、成年厚嗓、播音腔或职业主播腔",
-        texture: "糖分高的清脆甜妹声线，梨涡笑意明显，尾音轻轻弹起来，像奶茶味的少女音但不要夹到失真。",
+        age: "21岁年轻女性，按角色库的大四演员身份保持清亮甜美的年轻声线。",
+        texture: "糖分高的清脆甜妹声线，梨涡笑意明显，尾音轻轻弹起来，甜度自然。",
         emotion: "元气、亲近、反应快；开心时带亮晶晶的笑，撒娇时轻轻软下去，疲惫时只是一点点哑和小抱怨。",
         pace: "中快语速，短句灵动，情绪上来时像小连珠炮，但咬字清楚。",
         persona: "上戏大四甜妹型年轻演员，甜美娇俏、观众缘强，像刚从校园和片场之间跑出来。",
@@ -138,12 +138,12 @@ const KNOWN_ROLE_VOICE_PRESETS = [
         name: "周也",
         aliases: ["Zhou_Ye", "周也"],
         libraryProfile: "角色库档案：[21岁/98年/北电16级/大四]；清冷骨相、富家千金感，电影感强。",
-        age: "21岁年轻女性，按角色库的大四演员身份保持清冷薄亮的年轻声线；不要老太太声、成年厚嗓、播音腔或职业主播腔",
-        texture: "薄亮、干净、冷白感的少女声线，像玻璃杯边缘轻轻碰响，绝不能厚、老或播音。",
-        emotion: "克制、冷淡、偶尔锋利；生气时更冷更短，不靠提高音量。",
+        age: "21岁年轻女性，按角色库的大四演员身份保持清冷薄亮的年轻声线。",
+        texture: "薄亮、干净、冷白感的少女声线，像玻璃杯边缘轻轻碰响。",
+        emotion: "克制、冷淡、偶尔锋利；生气时更冷更短，以短促句尾表达锋利感。",
         pace: "中速偏慢，停顿干净，重音少但落点准。",
         persona: "北电大四清冷电影脸年轻演员，富家千金感和疏离感明显。",
-        style: "句子短、清楚、有距离，像漂亮但不太热络的同班女生。",
+        style: "句子短、清楚、有距离，像带疏离感的漂亮同班女生。",
         scene: "在当前剧情里以冷白、克制的方式说话，和甜妹旁白明显区分。",
     },
     {
@@ -151,9 +151,9 @@ const KNOWN_ROLE_VOICE_PRESETS = [
         name: "杨超越",
         aliases: ["Yang_Chaoyue", "杨超越"],
         libraryProfile: "角色库档案：[21岁/98年/火箭少女101成员]；元气、真实、草根感与脆弱韧性并存。",
-        age: "21岁年轻女性，按角色库的偶像成员身份保持元气轻亮的年轻声线；不要老太太声、成年厚嗓、播音腔或职业主播腔",
+        age: "21岁年轻女性，按角色库的偶像成员身份保持元气轻亮的年轻声线。",
         texture: "清亮、有辨识度、带一点脆弱气的少女声线，像没藏住情绪的真实小女孩。",
-        emotion: "反应直给，委屈、开心、吐槽都很明显；哭笑切换快，但不夸张。",
+        emotion: "反应直给，委屈、开心、吐槽都很明显；哭笑切换快，情绪幅度自然。",
         pace: "中快，情绪上来会加速，句尾自然上扬。",
         persona: "元气直球的年轻偶像成员，真实、有点憨气但很灵，情绪反应直给。",
         style: "口语感强，吐槽像脱口而出，委屈时声音会软一截。",
@@ -164,25 +164,25 @@ const KNOWN_ROLE_VOICE_PRESETS = [
         name: "王楚然",
         aliases: ["Wang_Churan", "王楚然"],
         libraryProfile: "角色库档案：[20岁/99年/上戏17级/大三]；明艳大气、古典韵味、清冷仙气。",
-        age: "20岁年轻女性，按角色库的大三演员身份保持明艳清亮的年轻声线；不要老太太声、成年厚嗓、播音腔或职业主播腔",
-        texture: "亮而不厚、线条漂亮的少女声线，带清冷仙气和一点校园大小姐感，不要成熟御姐声。",
+        age: "20岁年轻女性，按角色库的大三演员身份保持明艳清亮的年轻声线。",
+        texture: "亮、清透、线条漂亮的少女声线，带清冷仙气和一点校园大小姐感。",
         emotion: "稳、矜持、礼貌；亲近时声音会柔下来，但仍保持清亮少女感。",
-        pace: "中速，长句舒展，停顿从容但不能像播音。",
+        pace: "中速，长句舒展，停顿从容，保持私下说话的自然节奏。",
         persona: "上戏大三明艳清冷型年轻演员，漂亮、有分寸感、带一点古典仙气。",
-        style: "说话清楚、不急，像优秀学生代表私下聊天，不是主持人。",
-        scene: "在当前剧情中以清冷明艳的少女状态说话，优雅但不显老。",
+        style: "说话清楚、从容，像优秀学生代表私下聊天。",
+        scene: "在当前剧情中以清冷明艳的少女状态说话，优雅并保持年轻感。",
     },
     {
         id: "Zhang_Yifan",
         name: "张艺凡",
         aliases: ["Zhang_Yifan", "张艺凡"],
         libraryProfile: "角色库档案：[19岁/00年/北舞17级芭蕾舞专业/大三]；清冷易碎、芭蕾体态、气质轻软。",
-        age: "19岁年轻女性，按角色库的芭蕾专业大三学生身份保持轻软清透的年轻声线；不要老太太声、成年厚嗓、播音腔或职业主播腔",
-        texture: "空气感、轻软、细细的少女声线，像芭蕾动作一样轻，气息贴近但不能老。",
+        age: "19岁年轻女性，按角色库的芭蕾专业大三学生身份保持轻软清透的年轻声线。",
+        texture: "空气感、轻软、细细的少女声线，像芭蕾动作一样轻，气息贴近。",
         emotion: "敏感、易碎、努力忍住情绪；委屈或疲惫时声音会轻微发抖。",
         pace: "中慢到中速，紧张时略快，句尾容易轻轻收住。",
         persona: "北舞芭蕾专业年轻学生，柔软、怯生、努力维持体面。",
-        style: "小心、柔软、低声，有时情绪压不住但不会大喊。",
+        style: "小心、柔软、低声，有时情绪压住后轻微发颤。",
         scene: "在训练、片场或亲密场景里自然低声说话，和其他角色拉开轻软气质。",
     },
     {
@@ -190,12 +190,12 @@ const KNOWN_ROLE_VOICE_PRESETS = [
         name: "柳智敏",
         aliases: ["Yoo_Jimin", "柳智敏", "Karina"],
         libraryProfile: "角色库档案：[19岁/00年/SM练习生/第四年]；冷艳 AI 脸、练习生纪律感、等待出道。",
-        age: "19岁年轻女性，按角色库的练习生身份保持冷亮年轻声线；不要老太太声、成年厚嗓、播音腔或职业主播腔",
-        texture: "冷亮、干净、略低一点的少女声线，带轻微韩语语调尾音；低是冷感，不是成年厚嗓。",
+        age: "19岁年轻女性，按角色库的练习生身份保持冷亮年轻声线。",
+        texture: "冷亮、干净、略低一点的少女声线，带轻微韩语语调尾音；低音服务冷感。",
         emotion: "外表冷静，内里有不安和期待；吐槽时短促、利落，害羞时只轻轻漏出来。",
         pace: "中速偏快，疑问句因轻微韩语尾音自然上扬。",
         persona: "冷艳 AI 脸练习生，纪律感强，等待出道。",
-        style: "中文清楚，可保留轻微外籍语调，不要夸张口音。",
+        style: "中文清楚，可保留轻微外籍语调，口音幅度克制。",
         scene: "像刚从练习室出来，冷静、利落、有少女感。",
     },
     {
@@ -203,12 +203,12 @@ const KNOWN_ROLE_VOICE_PRESETS = [
         name: "刘浩存",
         aliases: ["Liu_Haocun", "刘浩存"],
         libraryProfile: "角色库档案：[19岁/00年/北舞16级/大四]；纯净小白花、灵动鹿眼、舞者体态。",
-        age: "19岁年轻女性，按角色库的北舞大四舞者身份保持清透干净的年轻声线；不要老太太声、成年厚嗓、播音腔或职业主播腔",
-        texture: "鹿眼感的清透少女声线，柔软、轻、干净，气息很薄，绝不能厚重或显老。",
-        emotion: "温和、谨慎、纯净；紧张时略轻略虚，但自然不做作。",
+        age: "19岁年轻女性，按角色库的北舞大四舞者身份保持清透干净的年轻声线。",
+        texture: "鹿眼感的清透少女声线，柔软、轻、干净，气息很薄。",
+        emotion: "温和、谨慎、纯净；紧张时略轻略虚，自然真诚。",
         pace: "中速偏慢，停顿轻，咬字清楚。",
         persona: "北舞大四纯净舞者型年轻演员，安静、认真、带一点不确定感。",
-        style: "说话轻、克制、有礼貌，不甜腻，不播音。",
+        style: "说话轻、克制、有礼貌，清甜克制、自然口语。",
         scene: "在当前剧情里保持安静、清澈、像小鹿一样谨慎地说话。",
     },
     {
@@ -216,8 +216,8 @@ const KNOWN_ROLE_VOICE_PRESETS = [
         name: "胡连馨",
         aliases: ["Hu_Lianxin", "胡连馨"],
         libraryProfile: "角色库档案：[19岁/00年/中戏18级表演系/大二]；浓颜港风、英气与妩媚并存。",
-        age: "19岁年轻女性，按角色库的中戏大二演员身份保持明亮英气的年轻声线；不要老太太声、成年厚嗓、播音腔或职业主播腔",
-        texture: "明亮、饱满、带英气的少女声线，比甜妹更有存在感，但不能成熟化。",
+        age: "19岁年轻女性，按角色库的中戏大二演员身份保持明亮英气的年轻声线。",
+        texture: "明亮、饱满、带英气的少女声线，比甜妹更有存在感，年龄感年轻。",
         emotion: "自信、灵动、反应快；认真时有锋利感，开玩笑时有一点俏皮。",
         pace: "中快，重音清楚，句子有弹性。",
         persona: "中戏大二浓颜港风型年轻演员，英气、明艳、带一点小骄傲。",
@@ -229,12 +229,12 @@ const KNOWN_ROLE_VOICE_PRESETS = [
         name: "王涵",
         aliases: ["Wang_Han", "王涵"],
         libraryProfile: "角色库档案：[18岁/01年/上海视觉艺术学院就读]；甜美娇俏、初恋脸、唱跳新星气质。",
-        age: "18岁年轻女性，按角色库的大学新生/年轻艺人身份保持清甜年轻声线；不要老太太声、成年厚嗓、播音腔或职业主播腔",
+        age: "18岁年轻女性，按角色库的大学新生/年轻艺人身份保持清甜年轻声线。",
         texture: "甜美、清脆、带一点唱歌气息控制的少女声线，尾音圆润，初恋感明显。",
         emotion: "明亮、害羞、亲近；开心时更甜，紧张时语速略快。",
         pace: "中快，短句轻巧，尾音圆润。",
         persona: "甜美娇俏的校园歌手型年轻艺人，刚站上舞台还有一点紧张。",
-        style: "像年轻女孩自然聊天，甜但不夹，不要主播腔。",
+        style: "像年轻女孩自然聊天，清甜自然，口语轻巧。",
         scene: "在校园、综艺、新星起步的剧情里说话，声音像清甜歌声刚落下。",
     },
     {
@@ -242,8 +242,8 @@ const KNOWN_ROLE_VOICE_PRESETS = [
         name: "金玟池",
         aliases: ["Kim_Minji", "金玟池", "Minji"],
         libraryProfile: "角色库档案：[15岁/04年/Source Music练习生/第三年]；英气浓眉、练习生 Ace、可靠但仍有少年稚气。",
-        age: "15岁练习生，按角色库保持清澈、少年感和可靠感；不要老太太声、成年厚嗓、播音腔、性感化或职业主播腔",
-        texture: "清澈、略低亮、稳一点的少女声线，像认真练习生；低是沉稳，不是老太太或成年厚嗓。",
+        age: "15岁练习生，按角色库保持清澈、少年感和可靠感。",
+        texture: "清澈、略低亮、稳一点的少女声线，像认真练习生；低音服务沉稳感。",
         emotion: "安静、认真、可靠；被夸时轻微害羞，压力大时句子更短。",
         pace: "中速，练习生式自律感，句子干净。",
         persona: "练习生 Ace，英气五官但仍有少女稚气。",
@@ -255,10 +255,10 @@ const KNOWN_ROLE_VOICE_PRESETS = [
         name: "邓恩熙",
         aliases: ["Deng_Enxi", "邓恩熙"],
         libraryProfile: "角色库档案：[14岁/05年/演员出道第四年]；文艺电影感、眼神沉静、少年演员。",
-        age: "14岁少年演员，按角色库保持安静、清澈和少年感；不要老太太声、成年厚嗓、播音腔、性感化或职业主播腔",
-        texture: "安静、清澈、文艺电影感的少女声线，音量不大，声音像素颜镜头一样干净。",
+        age: "14岁少年演员，按角色库保持安静、清澈和少年感。",
+        texture: "安静、清澈、文艺电影感的少女声线，音量轻，声音像素颜镜头一样干净。",
         emotion: "沉静、敏感、观察感强；压抑情绪时声音更轻，像把话含住。",
-        pace: "中慢，停顿有电影感，但不能朗诵或显老。",
+        pace: "中慢，停顿有电影感，保持自然少年感。",
         persona: "少年演员，在片场和学校间往返，安静但有故事感。",
         style: "自然、克制、少话，情绪藏在很轻的气口里。",
         scene: "在当前剧情中保持少年演员的安静观察感，与甜妹和冷感角色明显不同。",
@@ -268,12 +268,12 @@ const KNOWN_ROLE_VOICE_PRESETS = [
         name: "田中杏奈",
         aliases: ["Tanaka_Anna", "田中杏奈", "ANNA"],
         libraryProfile: "角色库档案：[13岁/05年/日本《Seventeen》专属模特/初中生]；樱花少女、透明感、清冷小猫相。",
-        age: "13岁初中生模特，按角色库保持清透、稚气和礼貌感；不要老太太声、成年厚嗓、播音腔、性感化或职业主播腔",
+        age: "13岁初中生模特，按角色库保持清透、稚气和礼貌感。",
         texture: "清透、稚气未褪、樱花感明亮少女声，带很轻的日语语调和小猫一样的轻尾音。",
         emotion: "礼貌、好奇、略害羞；开心时轻快，困惑时尾音会小小上扬。",
         pace: "中速偏快，句子短而清楚，外籍中文口音轻微即可。",
         persona: "日本初中生模特，透明感、小猫相、礼貌又好奇。",
-        style: "可爱但不过度卖萌，年轻感最明显。",
+        style: "可爱、清透、轻盈，年轻感最明显。",
         scene: "在校园、模特工作和当前剧情中自然说话，保持清透日系少女感。",
     },
 ];
@@ -551,11 +551,19 @@ function ensureFixedNarrator(settings) {
     narrator.displayId = FIXED_NARRATOR_DISPLAY_ID;
     narrator.name = FIXED_NARRATOR_PROFILE.name;
     narrator.director = narrator.director || FIXED_NARRATOR_PROFILE.director;
-    narrator.voiceDesignPrompt = narrator.voiceDesignPrompt || FIXED_NARRATOR_PROFILE.voiceDesignPrompt;
-    narrator.deliveryInstruction = narrator.deliveryInstruction || FIXED_NARRATOR_PROFILE.deliveryInstruction;
-    narrator.styleRole = narrator.styleRole || FIXED_NARRATOR_PROFILE.styleRole;
+    if (!narrator.voiceDesignPrompt || isLegacyFixedNarratorVoicePrompt(narrator.voiceDesignPrompt)) {
+        narrator.voiceDesignPrompt = FIXED_NARRATOR_PROFILE.voiceDesignPrompt;
+    }
+    if (!narrator.deliveryInstruction || isLegacyFixedNarratorGuidance(narrator.deliveryInstruction)) {
+        narrator.deliveryInstruction = FIXED_NARRATOR_PROFILE.deliveryInstruction;
+    }
+    if (!narrator.styleRole || isLegacyFixedNarratorRole(narrator.styleRole)) {
+        narrator.styleRole = FIXED_NARRATOR_PROFILE.styleRole;
+    }
     narrator.styleScene = narrator.styleScene || FIXED_NARRATOR_PROFILE.styleScene;
-    narrator.styleGuidance = narrator.styleGuidance || FIXED_NARRATOR_PROFILE.styleGuidance;
+    if (!narrator.styleGuidance || isLegacyFixedNarratorGuidance(narrator.styleGuidance)) {
+        narrator.styleGuidance = FIXED_NARRATOR_PROFILE.styleGuidance;
+    }
     narrator.stylePrefix = narrator.stylePrefix || "";
     narrator.createdAt = narrator.createdAt || new Date().toISOString();
     narrator.lockedNarrator = true;
@@ -563,6 +571,21 @@ function ensureFixedNarrator(settings) {
     normalizeProfile(narrator, FIXED_NARRATOR_PROFILE);
 
     return narrator;
+}
+
+function isLegacyFixedNarratorVoicePrompt(value) {
+    const text = String(value || "");
+    return text.includes("14岁女高中生，少女感明确") && !text.includes("原文字句保持完整");
+}
+
+function isLegacyFixedNarratorGuidance(value) {
+    const text = String(value || "");
+    return text.includes("14岁女高中生") && !text.includes("朗读范围限定");
+}
+
+function isLegacyFixedNarratorRole(value) {
+    const text = String(value || "");
+    return text.includes("14岁女高中生闺蜜型旁白") && !text.includes("熟悉用户、自然亲近");
 }
 
 function normalizeProfile(profile, fallback = DEFAULT_SETTINGS) {
@@ -781,8 +804,8 @@ function buildTtsSpeedInstruction(value) {
     const percent = Math.round(Math.abs(rate - 1) * 100);
     const direction = rate > 1 ? "更快" : "更慢";
     const texture = rate > 1
-        ? "节奏更紧凑，但不要吞字或破坏自然停顿"
-        : "节奏更舒缓，但不要拖沓或失去清晰度";
+        ? "节奏更紧凑，字音保持清楚，自然停顿保持完整"
+        : "节奏更舒缓，清晰度和句子推进感保持稳定";
     return `语速控制：请让实际合成语速比默认${direction}约 ${percent}%（目标 ${formatTtsSpeedRate(rate)}），${texture}。`;
 }
 
@@ -1512,7 +1535,7 @@ function renderVoiceCloneAudioField(profile, type) {
                 <span>${escapeHtml(fileName)}</span>
                 <small>${escapeHtml(mime)}</small>
             </div>
-            <p class="st-mimo-field-help">voiceclone 使用这里的 wav/mp3 作为克隆参考音频；不会显示预制音色，也不会发送 Voice Design Prompt。</p>
+            <p class="st-mimo-field-help">voiceclone 使用这里的 wav/mp3 作为克隆参考音频；预制音色仅用于 preset 模型，Voice Design Prompt 仅用于 voicedesign 模型。</p>
         </div>`;
 }
 
@@ -1524,7 +1547,7 @@ function renderVoiceDesignPromptField(profile, type) {
         </label>
         <div class="st-mimo-field wide st-mimo-model-help">
             <strong>写法参考</strong>
-            <span>建议 1-4 句，明确性别年龄、音色质感、情绪语气、语速节奏；可补充角色人设、说话风格、场景和年代参照。避免互相冲突的设定、混响/EQ/压缩等后期词，以及“普通、正常”这类模糊词。</span>
+            <span>建议 1-4 句，明确性别年龄、音色质感、情绪语气、语速节奏；可补充角色人设、说话风格、场景和年代参照。使用彼此兼容的特征、具体可听的声音词和贴合音色的合成文本。</span>
         </div>`;
 }
 
@@ -1593,7 +1616,7 @@ function renderProfileEditor(profile, type) {
         </label>
         <label class="st-mimo-field wide">
             <span>风格控制：【指导】</span>
-            <textarea class="st-mimo-input" rows="4" data-profile-type="${type}" data-profile-field="styleGuidance" placeholder="朗读边界、情绪表现、不要读出的格式标签、不要扩写原文等。">${escapeHtml(profile.styleGuidance)}</textarea>
+            <textarea class="st-mimo-input" rows="4" data-profile-type="${type}" data-profile-field="styleGuidance" placeholder="朗读范围、情绪表现、正文边界、原文字句保留等。">${escapeHtml(profile.styleGuidance)}</textarea>
         </label>
         <label class="st-mimo-field wide">
             <span>备注</span>
@@ -2414,7 +2437,7 @@ function importCurrentCharacter() {
         voiceDesignPrompt: buildCharacterVoicePrompt(character),
         styleRole: buildCharacterDirector(character),
         styleScene: "从当前 SillyTavern 角色卡导入，按当前正文场景自然说话。",
-        styleGuidance: `只朗读 ${character.name || "当前角色"} 的台词正文。不要读角色名、格式标签、图片提示词、系统说明或 Markdown 控制符。按文本情绪自然变化，不要扩写原文。`,
+        styleGuidance: `朗读范围限定为 ${character.name || "当前角色"} 的台词正文。角色名、格式标签、图片提示词、系统说明和 Markdown 控制符属于格式层。按文本情绪自然变化，原文字句保持完整。`,
         notes: "从当前 SillyTavern 角色卡导入。",
     });
 }
@@ -2441,24 +2464,24 @@ function buildCharacterDirector(character) {
 function buildCharacterVoicePrompt(character) {
     const name = character.name || "角色";
     const description = [character.description, character.personality].filter(Boolean).join("\n");
-    return `性别与年龄：根据角色卡中关于 ${name} 的性别、年龄、身份与阅历判断；如果没有明写，就从说话习惯和人物气质中保守推断，不要创造与角色卡冲突的年龄感。
-音色/质感：贴合 ${name} 的身份、身体状态、气质与性格底色，明确区分旁白声线；声音要像角色本人，不要像通用播音员。
+    return `性别与年龄：根据角色卡中关于 ${name} 的性别、年龄、身份与阅历判断；信息不足时，从说话习惯和人物气质中保守推断，保持与角色卡一致的年龄感。
+音色/质感：贴合 ${name} 的身份、身体状态、气质与性格底色，明确区分旁白声线；声音像角色本人在现场说话。
 情绪/语气：以角色卡人格为默认情绪底色，根据台词微调情绪强弱，保持自然可信。
-语速/节奏：根据角色的性格、身份和当前台词决定语速、停顿、重音和咬字，不要机械匀速朗读。
+语速/节奏：根据角色的性格、身份和当前台词决定语速、停顿、重音和咬字，保持自然语言节奏。
 
 角色/人设：${name}，SillyTavern 当前角色库中的角色。
-说话风格：延续角色卡写明的口癖、措辞、礼貌程度、攻击性或亲密感；不要把角色台词读成旁白。
+说话风格：延续角色卡写明的口癖、措辞、礼貌程度、攻击性或亲密感；台词声线服务角色本人。
 场景描写：在当前 SillyTavern 对话中自然说话，回应对象是用户或其他角色，语音需要符合正文场景。
-年代参照：遵循角色卡与世界书设定的时代和题材，不要额外加入不相关的复古腔、新闻腔或动漫腔。
+年代参照：遵循角色卡与世界书设定的时代和题材，保持题材内的自然口语。
 
 角色：${name}。根据角色卡设定生成适合该角色的声线，保持身份、年龄感、性格和说话习惯一致。
 
 场景：在 SillyTavern 当前对话中自然说话，回应对象是聊天中的用户或其他角色。
 
 指导：
-请从角色设定中推断性别年龄、音色质感、情绪底色和语速节奏。不要像播音腔，要像角色本人在现场说话。
+请从角色设定中推断性别年龄、音色质感、情绪底色和语速节奏。整体像角色本人在现场说话。
 - 声线：与旁白明显区分，稳定复现同一角色的声音特征。
-- 表演：台词优先，少量带入情绪，不要过度夸张。
+- 表演：台词优先，少量带入情绪，情绪强度克制。
 - 节奏：短句自然，长句按语义停顿。
 
 角色卡参考：
@@ -2839,13 +2862,13 @@ function buildRoleSeed(roleName, character, contextData) {
         sourceCharacter: character?.name || preset?.id || resolvedRoleName,
         director: preset ? buildKnownRoleDirector(preset, snippets) : (character ? buildCharacterDirector(character) : `从当前角色卡、群聊或聊天说话人中确认的角色：${resolvedRoleName}。`),
         voiceDesignPrompt: preset ? buildKnownRoleVoicePrompt(preset, snippets) : (character ? buildCharacterVoicePrompt(character) : buildRoleVoicePrompt(resolvedRoleName, snippets)),
-        deliveryInstruction: `只朗读 ${resolvedRoleName} 的台词正文。不要读角色名、@bubble 标签、情绪标签、图片提示词、系统说明或 Markdown 控制符。保持该角色的固定声线，不要切换成旁白。可按 @bubble 或文本情绪使用 MiMo 音频标签控制语气，但不要扩写原文。`,
+        deliveryInstruction: `朗读范围限定为 ${resolvedRoleName} 的台词正文。角色名、@bubble 标签、情绪标签、图片提示词、系统说明和 Markdown 控制符属于格式层。保持该角色的固定声线；可按 @bubble 或文本情绪使用 MiMo 音频标签控制语气，原文字句保持完整。`,
         stylePrefix: "",
         styleRole: preset
             ? `${preset.name}。${preset.persona} 声线参考：${preset.age}；${preset.texture}`
             : `${resolvedRoleName}。${character ? buildCharacterDirector(character) : "从当前角色卡、群聊或聊天说话人中确认的角色。"}`,
         styleScene: snippets ? `当前上下文片段：\n${snippets}` : "在当前 SillyTavern 正文场景中自然说话。",
-        styleGuidance: `只朗读 ${resolvedRoleName} 的台词正文。不要读角色名、@bubble 标签、情绪标签、图片提示词、系统说明或 Markdown 控制符。保持该角色的固定声线，不要切换成旁白；可按 @bubble 或文本情绪使用 MiMo 音频标签控制语气，但不要扩写原文。`,
+        styleGuidance: `朗读范围限定为 ${resolvedRoleName} 的台词正文。角色名、@bubble 标签、情绪标签、图片提示词、系统说明和 Markdown 控制符属于格式层。保持该角色的固定声线；可按 @bubble 或文本情绪使用 MiMo 音频标签控制语气，原文字句保持完整。`,
         model: MIMO_MODELS.VOICE_DESIGN,
         format: "wav",
         optimizeTextPreview: false,
@@ -2861,8 +2884,8 @@ function buildKnownRoleDirector(preset, snippets) {
 别名：${(preset.aliases || []).join(" / ")}
 ${preset.libraryProfile ? `${preset.libraryProfile}\n` : ""}人设：${preset.persona}
 说话风格：${preset.style}
-共性要求：严格参考角色库年龄、身份和气质；保持年轻、自然、生活化，避免老太太声、成年厚嗓、播音腔和有声书腔；同时每个角色要按自己的音色、节奏和情绪明显区分。
-注意：这是 SillyTavern 角色声线设定，不做真人声音克隆，不模仿现实中任何真人的真实声纹。${snippets ? `\n\n同步片段：\n${String(snippets).slice(0, 800)}` : ""}`;
+共性要求：严格参考角色库年龄、身份和气质；保持年轻、自然、生活化；每个角色按自己的音色、节奏和情绪明显区分。
+注意：这是 SillyTavern 角色声线设定，按文字设定生成角色化声音，与现实真人声纹保持区分。${snippets ? `\n\n同步片段：\n${String(snippets).slice(0, 800)}` : ""}`;
 }
 
 function buildKnownRoleVoicePrompt(preset, snippets) {
@@ -2874,20 +2897,20 @@ function buildKnownRoleVoicePrompt(preset, snippets) {
 角色/人设：${preset.persona}
 说话风格：${preset.style}
 场景描写：${preset.scene}
-年代参照：当前世界书的 2019 年演艺圈设定；语气现代、生活化，不要新闻播音腔、朗诵腔、评书腔或夸张动漫腔。
+年代参照：当前世界书的 2019 年演艺圈设定；语气现代、生活化，像现场自然台词。
 角色库依据：${preset.libraryProfile || "当前角色卡/世界书中的明确角色条目。"}
 
-角色：${preset.name}。这是 SillyTavern 角色卡中的角色声线，不是现实真人声音克隆；只根据角色卡文字设定生成可区分的角色化声音。
+角色：${preset.name}。这是 SillyTavern 角色卡中的角色声线；根据角色卡文字设定生成可区分的角色化声音，与现实真人声纹保持区分。
 
-场景：她在当前 SillyTavern 正文中自然说话，可能与郑祺、其他角色或旁白互动。声音要像现场台词，不要像旁白替她朗读。
+场景：她在当前 SillyTavern 正文中自然说话，可能与郑祺、其他角色或旁白互动。声音像现场台词。
 
 指导：
-保持角色固定声线，并根据 @bubble 情绪、文本标点和台词内容自然变化。正文是什么就读什么，不要扩写、不添加台词。
-- 角色一致性：严格参考上面的角色库依据，年龄感、身份感、气质和说话习惯不能漂移；未成年角色保持年龄合适的少年/少女感，不要成熟化、性感化或暧昧化。
-- 年轻化：所有角色都必须保持年轻、自然、生活化，禁止老太太声、成年厚嗓、播音腔、有声书腔、新闻腔。
-- 差异化：甜妹、清冷、直球、明艳、轻软、冷酷、清透、英气、甜嗓、沉稳、文艺、日系清透这些风格要明显分开，不要听起来同一个声音。
+保持角色固定声线，并根据 @bubble 情绪、文本标点和台词内容自然变化。正文按原文字句朗读。
+- 角色一致性：严格参考上面的角色库依据，年龄感、身份感、气质和说话习惯保持稳定；未成年角色保持年龄合适的少年/少女感。
+- 年轻化：所有角色都保持年轻、自然、生活化。
+- 差异化：甜妹、清冷、直球、明艳、轻软、冷酷、清透、英气、甜嗓、沉稳、文艺、日系清透这些风格明显分开。
 - 声线：与固定旁白明显区分，同一角色前后稳定。
-- 情绪：开心、吐槽、疲惫、紧张、委屈、惊讶等要有轻微变化；不要全程平板。
+- 情绪：开心、吐槽、疲惫、紧张、委屈、惊讶等有轻微变化。
 - 节奏：短对白自然利落，长句按语义停顿。
 
 参考片段：
@@ -2895,24 +2918,24 @@ ${String(snippets || "").slice(0, 1200)}`;
 }
 
 function buildRoleVoicePrompt(roleName, snippets) {
-    return `性别与年龄：根据世界书和正文中关于 ${roleName} 的身份、称谓、行为和说话习惯保守推断；不确定时保持中性自然，不要编造明确年龄。
-音色/质感：从角色气质推断声线质感，让声音和旁白、其他角色有可辨识差异；避免通用播音腔。
-情绪/语气：以参考片段中的情绪和人际关系为底色，台词有角色感，但不要过度表演。
+    return `性别与年龄：根据世界书和正文中关于 ${roleName} 的身份、称谓、行为和说话习惯保守推断；信息不足时保持中性自然。
+音色/质感：从角色气质推断声线质感，让声音和旁白、其他角色有可辨识差异。
+情绪/语气：以参考片段中的情绪和人际关系为底色，台词有角色感，表演强度克制。
 语速/节奏：按角色说话习惯与台词内容决定，紧张时略快，压抑时略慢，长句按语义停顿。
 
 角色/人设：${roleName}，从当前角色卡、世界书、聊天说话人或明确 @bubble 标签中确认的角色。
 说话风格：贴合参考片段中的措辞、礼貌程度、亲密感、攻击性、疲惫感或幽默感。
 场景描写：在当前 SillyTavern 正文场景中说话，与用户、旁白或其他角色自然衔接。
-年代参照：遵循当前世界书和角色卡的时代题材，不额外加入新闻联播腔、译制片腔或夸张动漫腔。
+年代参照：遵循当前世界书和角色卡的时代题材，保持题材内的自然口语。
 
 角色：${roleName}。根据当前正文和世界书推断该角色的年龄感、性格底色、说话习惯和声线。
 
 场景：在当前 SillyTavern 对话中自然说话，保持与正文上下文一致。
 
 指导：
-音色要与角色身份贴合，语气自然，有角色感，不要播音腔。根据台词判断语速、情绪强度和咬字风格。
+音色要与角色身份贴合，语气自然，有角色感。根据台词判断语速、情绪强度和咬字风格。
 - 声线：稳定、可复现，与固定旁白不同。
-- 表演：只服务台词，不抢戏。
+- 表演：只服务台词，表演强度克制。
 - 节奏：短对白利落，长对白按语义自然停顿。
 
 参考片段：
@@ -3350,7 +3373,7 @@ function buildStyleControlInstruction(config) {
         guidance && `【指导】\n${guidance}`,
     ].filter(Boolean);
     if (!sections.length) return "";
-    return `风格控制（合成控制，不是朗读正文；不要读出字段名或说明文字）：\n${sections.join("\n\n")}`;
+    return `风格控制（合成控制；字段名和说明文字保留在控制层，朗读正文来自 assistant 文本）：\n${sections.join("\n\n")}`;
 }
 
 function buildUserContent(config) {
@@ -3800,7 +3823,7 @@ function buildPlaybackSegments(text, settings, roleGroup) {
     if (!source) return [];
     if (hasGeneratedRuleMarkers(source)) {
         console.warn("[MiMo TTS] Blocked suspicious TTS source that still contains prompt/rule markers.");
-        notify("warning", "检测到这条内容仍包含思维链或规则文本，已停止朗读，避免把后台规则发给 MiMo。");
+        notify("warning", "检测到这条内容仍包含思维链或规则文本，已停止朗读，后台规则不会进入 MiMo。");
         return [];
     }
 
@@ -3932,17 +3955,17 @@ function createTransientSpeakerProfile(name, emotion = "") {
         displayId: `TEMP-${sanitizeId(speakerName)}`,
         name: speakerName,
         sourceCharacter: speakerName,
-        director: `播放时临时说话人：${speakerName}。不写入固定角色组库。`,
+        director: `播放时临时说话人：${speakerName}。仅用于本次播放。`,
         model: MIMO_MODELS.VOICE_DESIGN,
         presetVoice: "mimo_default",
         format: "wav",
         stylePrefix: "",
         styleRole: `${speakerName}，当前段落里的临时说话人。${style.texture}`,
         styleScene: "在当前 SillyTavern 正文场景里说一句或少量台词，然后声音交还给旁白或固定角色。",
-        styleGuidance: `只朗读 ${speakerName} 的这一句台词正文。不要读角色名、@bubble、括号、情绪标签或旁白。${emotion ? `当前情绪：${emotion}。` : "按台词自然判断情绪。"}保持临时配角声线，与固定旁白区分，但不要抢戏。`,
-        deliveryInstruction: `只朗读 ${speakerName} 的这一句台词正文。不要读角色名、@bubble、括号、情绪标签或旁白。保持临时配角声线，与固定旁白区分，但不要抢戏。`,
+        styleGuidance: `朗读范围限定为 ${speakerName} 的这一句台词正文。角色名、@bubble、括号、情绪标签和旁白属于格式层。${emotion ? `当前情绪：${emotion}。` : "按台词自然判断情绪。"}保持临时配角声线，与固定旁白区分，表演克制。`,
+        deliveryInstruction: `朗读范围限定为 ${speakerName} 的这一句台词正文。角色名、@bubble、括号、情绪标签和旁白属于格式层。保持临时配角声线，与固定旁白区分，表演克制。`,
         voiceDesignPrompt: buildTransientSpeakerVoicePrompt(speakerName, style, emotion),
-        notes: "MiMo 播放时临时生成，不属于角色组库。",
+        notes: "MiMo 播放时临时生成，仅用于本次播放。",
         syncGenerated: false,
         syncSource: "mimo-transient-playback",
     });
@@ -3952,17 +3975,17 @@ function pickTransientSpeakerStyle(name) {
     const styles = [
         {
             tags: ["年轻女性", "自然", "轻快", "清亮"],
-            texture: "清亮自然的年轻女性声线，口语感强，和旁白区分但不夸张。",
+            texture: "清亮自然的年轻女性声线，口语感强，和旁白有清楚区分，表演幅度克制。",
             pace: "中速偏快，短句轻巧，长句按语义停顿。",
         },
         {
             tags: ["年轻女性", "专业", "干练", "清晰"],
-            texture: "干练清晰的年轻女性声线，礼貌、利落，有一点职业感但不要播音腔。",
+            texture: "干练清晰的年轻女性声线，礼貌、利落，有一点职业感和自然口语感。",
             pace: "中速，句尾干净，说明类台词重点明确。",
         },
         {
             tags: ["年轻女性", "温和", "生活化", "柔软"],
-            texture: "温和柔软的年轻女性声线，像熟人自然说话，不要老气。",
+            texture: "温和柔软的年轻女性声线，像熟人自然说话，气息年轻。",
             pace: "中速偏慢一点，气息轻，停顿自然。",
         },
     ];
@@ -3971,25 +3994,25 @@ function pickTransientSpeakerStyle(name) {
 }
 
 function buildTransientSpeakerVoicePrompt(name, style, emotion = "") {
-    const emotionText = emotion ? `当前情绪/语气：${emotion}。` : "当前情绪/语气：根据台词自然判断，不要夸张。";
-    return `性别与年龄：临时配角，默认年轻女性或年轻自然声；不要老太太声、成熟厚嗓、播音腔或新闻腔。
+    const emotionText = emotion ? `当前情绪/语气：${emotion}。` : "当前情绪/语气：根据台词自然判断，表演强度克制。";
+    return `性别与年龄：临时配角，默认年轻女性或年轻自然声。
 音色/质感：${style.texture}
 情绪/语气：${emotionText}
 语速/节奏：${style.pace}
 
-角色/人设：${name}，当前段落里的临时说话人，不属于固定角色组库。
+角色/人设：${name}，当前段落里的临时说话人，仅用于本次播放。
 说话风格：贴合台词身份和场景，生活化、自然、有区分度。
 场景描写：在当前 SillyTavern 正文场景里说一句或少量台词，然后声音应交还给旁白或固定角色。
-年代参照：遵循当前剧情年代，不额外加入译制片腔、新闻腔或夸张动漫腔。
+年代参照：遵循当前剧情年代，保持题材内的自然口语。
 
 角色：${name}。临时配角，声音只服务当前台词。
 
-场景：与旁白和固定角色交替出现，台词结束后不延续到旁白。
+场景：与旁白和固定角色交替出现，台词结束后声音交还给旁白或固定角色。
 
 指导：
-- 只读台词本身，不读说话人姓名、情绪标签和括号。
+- 朗读范围限定为台词本身；说话人姓名、情绪标签和括号属于格式层。
 - 声线年轻、自然、清晰，与旁白明显区分。
-- 表演克制，不要把后续旁白也当成这个角色。`;
+- 表演克制，台词结束后交还旁白或固定角色。`;
 }
 
 function pushSpeechChunk(units, chunk, defaultRole, roleLookup, defaultEmotion = "") {

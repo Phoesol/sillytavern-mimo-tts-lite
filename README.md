@@ -51,7 +51,7 @@ Voice Design Prompt writing guidance:
 
 - Keep it short, usually 1-4 sentences.
 - Prefer concrete traits: age/gender, timbre, emotional tone, pace, role/persona, speaking style, scene, and era reference.
-- Avoid conflicting traits, post-processing terms such as reverb/EQ/compression, and vague words such as "ordinary" or "normal".
+- Use compatible traits, concrete audible wording, and synthesis text that matches the chosen voice.
 
 Speaker format example:
 
