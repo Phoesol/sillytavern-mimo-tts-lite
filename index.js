@@ -548,12 +548,19 @@ function ensureFixedNarrator(settings) {
         settings.libraries.narrators.unshift(narrator);
     }
 
-    Object.assign(narrator, FIXED_NARRATOR_PROFILE, {
-        uid: narrator.uid,
-        createdAt: narrator.createdAt || new Date().toISOString(),
-        lockedNarrator: true,
-        syncGenerated: false,
-    });
+    narrator.displayId = FIXED_NARRATOR_DISPLAY_ID;
+    narrator.name = FIXED_NARRATOR_PROFILE.name;
+    narrator.director = narrator.director || FIXED_NARRATOR_PROFILE.director;
+    narrator.voiceDesignPrompt = narrator.voiceDesignPrompt || FIXED_NARRATOR_PROFILE.voiceDesignPrompt;
+    narrator.deliveryInstruction = narrator.deliveryInstruction || FIXED_NARRATOR_PROFILE.deliveryInstruction;
+    narrator.styleRole = narrator.styleRole || FIXED_NARRATOR_PROFILE.styleRole;
+    narrator.styleScene = narrator.styleScene || FIXED_NARRATOR_PROFILE.styleScene;
+    narrator.styleGuidance = narrator.styleGuidance || FIXED_NARRATOR_PROFILE.styleGuidance;
+    narrator.stylePrefix = narrator.stylePrefix || "";
+    narrator.createdAt = narrator.createdAt || new Date().toISOString();
+    narrator.lockedNarrator = true;
+    narrator.syncGenerated = false;
+    normalizeProfile(narrator, FIXED_NARRATOR_PROFILE);
 
     return narrator;
 }
