@@ -20,6 +20,12 @@ const TTS_SPEED_RATE_STEP = 0.1;
 const AUTO_READ_DELAY_MS = 1200;
 const DUPLICATE_PLAYBACK_WINDOW_MS = 8000;
 const AUTO_DUPLICATE_PLAYBACK_WINDOW_MS = 60000;
+const STYLE_CUE_MAX_CHARS = 96;
+const STYLE_CUE_WORDS = [
+    "闺蜜", "小声", "自然", "清脆", "稚嫩", "少女", "床上", "聊天", "旁白", "朗读",
+    "语速", "语气", "音色", "声线", "情绪", "风格", "口语", "亲近", "轻声", "温柔",
+    "开心", "平静", "疑惑", "惊讶", "疲惫", "委屈", "撒娇", "无奈", "慵懒", "高冷",
+];
 const FIXED_NARRATOR_DISPLAY_ID = "NARRATOR-TAIWAN-COLLEGE";
 const PLUGIN_API_ROOT = "/api/plugins/st-mimo-tts";
 const GENERATED_AUDIO_PUBLIC_DIR = "/scripts/extensions/third-party/st-mimo-tts/generated-audio";
@@ -309,6 +315,7 @@ const DEFAULT_SETTINGS = {
     panelOffsetX: 0,
     panelOffsetY: 0,
     ttsSpeedRate: 1.0,
+    playbackRate: 1.0,
     audioTagControlEnabled: true,
     playerPosition: {
         left: null,
@@ -388,6 +395,10 @@ const playbackState = {
     lastRequestAt: 0,
     lastAutoReadKey: "",
     lastAutoReadAt: 0,
+    lastPlayedMessageId: null,
+    lastPlayedMessageAt: 0,
+    lastAutoReadMessageId: null,
+    lastAutoReadMessageAt: 0,
 };
 
 const readingHighlightState = {
@@ -655,6 +666,57 @@ function formatTtsSpeedRate(value) {
     return `${normalizeTtsSpeedRate(value).toFixed(1)}x`;
 }
 
+function unwrapStyleCueText(value) {
+    return String(value || "")
+        .trim()
+        .replace(/^[\s([{\uFF08\u3010]+/u, "")
+        .replace(/[\s)\]\uFF09\u3011]+$/u, "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function isLikelyStyleCueText(value) {
+    const source = unwrapStyleCueText(value);
+    if (!source || source.length > STYLE_CUE_MAX_CHARS) return false;
+    if (/[。！？!?；;：:]/u.test(source)) return false;
+    const cueHits = STYLE_CUE_WORDS.filter((word) => source.includes(word)).length;
+    if (cueHits >= 2) return true;
+    if (cueHits < 1) return false;
+    const compact = source.replace(/[\s、,，/|+\-_.]+/g, "");
+    return compact.length <= 12 && !/[我你他她它们]/u.test(compact);
+}
+
+function stripLeadingStyleCueText(text) {
+    let result = String(text || "").trim();
+    let changed = true;
+    while (changed && result) {
+        changed = false;
+        result = result.replace(/^\s*(?:\(([^)]{1,96})\)|（([^）]{1,96})）|\[([^\]]{1,96})\]|【([^】]{1,96})】)\s*/u, (match, round, cnRound, square, cnSquare) => {
+            const cue = round || cnRound || square || cnSquare || "";
+            if (square && INLINE_TAGS.includes(`[${square}]`)) return match;
+            if (!isLikelyStyleCueText(cue)) return match;
+            changed = true;
+            return "";
+        }).trim();
+
+        const firstBreak = result.indexOf("\n");
+        if (firstBreak > 0) {
+            const firstLine = result.slice(0, firstBreak).trim();
+            if (isLikelyStyleCueText(firstLine)) {
+                result = result.slice(firstBreak + 1).trim();
+                changed = true;
+            }
+        }
+    }
+    return result;
+}
+
+function buildStyleCueInstruction(stylePrefix) {
+    const cue = unwrapStyleCueText(stylePrefix);
+    if (!cue || !isLikelyStyleCueText(cue)) return "";
+    return `风格参考：${cue}。这是合成控制提示，不是朗读正文；不要把这些词读出来。`;
+}
+
 function buildTtsSpeedInstruction(value) {
     const rate = normalizeTtsSpeedRate(value);
     if (rate === 1.0) return "";
@@ -666,7 +728,15 @@ function buildTtsSpeedInstruction(value) {
     return `语速控制：请让实际合成语速比默认${direction}约 ${percent}%（目标 ${formatTtsSpeedRate(rate)}），${texture}。`;
 }
 
-function applyAudioElementPlaybackRate(audio, value = getSettings().ttsSpeedRate) {
+function getPlaybackRate(settings = getSettings()) {
+    return normalizeTtsSpeedRate(settings.playbackRate ?? 1.0);
+}
+
+function getTtsSynthesisSpeedRate(settings = getSettings()) {
+    return normalizeTtsSpeedRate(settings.ttsSpeedRate ?? 1.0);
+}
+
+function applyAudioElementPlaybackRate(audio, value = getPlaybackRate()) {
     if (!audio) return;
     const rate = normalizeTtsSpeedRate(value);
     audio.defaultPlaybackRate = rate;
@@ -680,21 +750,32 @@ function setTtsSpeedRate(value, options = {}) {
     const settings = getSettings();
     const nextRate = normalizeTtsSpeedRate(value);
     settings.ttsSpeedRate = nextRate;
-    applyAudioElementPlaybackRate(activeAudio, nextRate);
     saveSettingsDebounced();
     updateFloatingPlayer();
-    if (!options.silent) setStatus(`播放速度 ${formatTtsSpeedRate(nextRate)}，当前音频立即生效`, "ok");
+    if (!options.silent) setStatus(`合成语速 ${formatTtsSpeedRate(nextRate)}，不改变播放器倍速`, "ok");
     return nextRate;
 }
 
 function adjustTtsSpeedRate(delta) {
     const settings = getSettings();
-    const current = settings.ttsSpeedRate ?? settings.playbackRate ?? 1.0;
+    const current = getTtsSynthesisSpeedRate(settings);
     return setTtsSpeedRate(normalizeTtsSpeedRate(current) + delta);
 }
 
-const setPlaybackRate = setTtsSpeedRate;
-const adjustPlaybackRate = adjustTtsSpeedRate;
+function setPlaybackRate(value, options = {}) {
+    const settings = getSettings();
+    const nextRate = normalizeTtsSpeedRate(value);
+    settings.playbackRate = nextRate;
+    applyAudioElementPlaybackRate(activeAudio, nextRate);
+    saveSettingsDebounced();
+    updateFloatingPlayer();
+    if (!options.silent) setStatus(`播放倍速 ${formatTtsSpeedRate(nextRate)}，已保存`, "ok");
+    return nextRate;
+}
+
+function adjustPlaybackRate(delta) {
+    return setPlaybackRate(getPlaybackRate() + delta);
+}
 
 function buildPresetOptions(selected) {
     return PRESET_VOICES.map((voice) => {
@@ -778,7 +859,7 @@ function getProfileConfig(profile, settings) {
         stylePrefix: profile?.stylePrefix ?? settings.stylePrefix,
         deliveryInstruction: profile?.deliveryInstruction ?? settings.deliveryInstruction,
         voiceDesignPrompt: profile?.voiceDesignPrompt || settings.voiceDesignPrompt,
-        ttsSpeedRate: settings.ttsSpeedRate ?? settings.playbackRate ?? 1.0,
+        ttsSpeedRate: settings.ttsSpeedRate ?? 1.0,
         audioTagControlEnabled: settings.audioTagControlEnabled !== false,
     };
 }
@@ -848,10 +929,10 @@ function injectFloatingPlayer() {
         <button type="button" class="st-mimo-player-btn" data-mimo-action="player-next" title="下一段" aria-label="下一段">
             <i class="fa-solid fa-forward-step"></i>
         </button>
-        <button type="button" class="st-mimo-player-btn st-mimo-player-speed" data-mimo-action="speed-down" title="降低合成语速 10%" aria-label="降低合成语速 10%">
+        <button type="button" class="st-mimo-player-btn st-mimo-player-speed" data-mimo-action="speed-down" title="降低播放倍速 10%" aria-label="降低播放倍速 10%">
             <span class="st-mimo-player-btn-text">-10</span>
         </button>
-        <button type="button" class="st-mimo-player-btn st-mimo-player-speed" data-mimo-action="speed-up" title="提高合成语速 10%" aria-label="提高合成语速 10%">
+        <button type="button" class="st-mimo-player-btn st-mimo-player-speed" data-mimo-action="speed-up" title="提高播放倍速 10%" aria-label="提高播放倍速 10%">
             <span class="st-mimo-player-btn-text">+10</span>
         </button>
         <button type="button" class="st-mimo-player-btn is-danger" data-mimo-action="stop" title="停止" aria-label="停止">
@@ -1549,8 +1630,8 @@ function updateFloatingPlayer() {
     const total = playbackState.segments.length;
     const index = total ? playbackState.currentIndex + 1 : 0;
     const mode = settings.enabled ? playbackState.mode : "disabled";
-    const ttsSpeedRate = normalizeTtsSpeedRate(settings.ttsSpeedRate ?? settings.playbackRate ?? 1.0);
-    settings.ttsSpeedRate = ttsSpeedRate;
+    const playbackRate = getPlaybackRate(settings);
+    settings.playbackRate = playbackRate;
 
     player.dataset.state = mode;
     player.classList.toggle("disabled", !settings.enabled);
@@ -1571,14 +1652,17 @@ function updateFloatingPlayer() {
                     : "最新回复";
     }
     if (progress) progress.textContent = `${index}/${total}`;
-    if (rateLabel) rateLabel.textContent = formatTtsSpeedRate(ttsSpeedRate);
+    if (rateLabel) {
+        rateLabel.textContent = formatTtsSpeedRate(playbackRate);
+        rateLabel.title = `播放倍速 ${formatTtsSpeedRate(playbackRate)}，只影响已生成音频播放`;
+    }
     if (speedDown) {
-        speedDown.toggleAttribute("disabled", ttsSpeedRate <= TTS_SPEED_RATE_MIN);
-        speedDown.title = `降低合成语速 10%（当前 ${formatTtsSpeedRate(ttsSpeedRate)}）`;
+        speedDown.toggleAttribute("disabled", playbackRate <= TTS_SPEED_RATE_MIN);
+        speedDown.title = `降低播放倍速 10%（当前 ${formatTtsSpeedRate(playbackRate)}）`;
     }
     if (speedUp) {
-        speedUp.toggleAttribute("disabled", ttsSpeedRate >= TTS_SPEED_RATE_MAX);
-        speedUp.title = `提高合成语速 10%（当前 ${formatTtsSpeedRate(ttsSpeedRate)}）`;
+        speedUp.toggleAttribute("disabled", playbackRate >= TTS_SPEED_RATE_MAX);
+        speedUp.title = `提高播放倍速 10%（当前 ${formatTtsSpeedRate(playbackRate)}）`;
     }
 }
 
@@ -1798,8 +1882,8 @@ async function handleClick(event) {
             case "player-toggle": await togglePlayerPlayback(); break;
             case "player-prev": await playAdjacentSegment(-1); break;
             case "player-next": await playAdjacentSegment(1); break;
-            case "speed-down": adjustTtsSpeedRate(-TTS_SPEED_RATE_STEP); break;
-            case "speed-up": adjustTtsSpeedRate(TTS_SPEED_RATE_STEP); break;
+            case "speed-down": adjustPlaybackRate(-TTS_SPEED_RATE_STEP); break;
+            case "speed-up": adjustPlaybackRate(TTS_SPEED_RATE_STEP); break;
             case "stop": stopPlayback(); break;
             case "open-audio-folder": await openGeneratedAudioFolder(); break;
             case "toggle-fullscreen": await toggleFullscreen(); break;
@@ -3063,19 +3147,18 @@ async function importAll(file) {
 function buildUserContent(config) {
     const delivery = String(config.deliveryInstruction || "").trim();
     const speedInstruction = buildTtsSpeedInstruction(config.ttsSpeedRate);
+    const styleInstruction = buildStyleCueInstruction(config.stylePrefix);
     if (config.model === MIMO_MODELS.VOICE_DESIGN) {
         const design = String(config.voiceDesignPrompt || "").trim();
         if (!design) throw new Error("Voice Design Prompt 不能为空。");
-        return [design, speedInstruction, delivery && `朗读指导：${delivery}`].filter(Boolean).join("\n\n");
+        return [design, styleInstruction, speedInstruction, delivery && `朗读指导：${delivery}`].filter(Boolean).join("\n\n");
     }
-    return [speedInstruction, delivery].filter(Boolean).join("\n\n");
+    return [styleInstruction, speedInstruction, delivery].filter(Boolean).join("\n\n");
 }
 
 function applyStylePrefix(text, config) {
     const rawText = String(text || "").trim();
-    const stylePrefix = String(config.stylePrefix || "").trim();
-    if (!stylePrefix || /^[\s]*[([]|^[\s]*（/.test(rawText)) return rawText;
-    return `${stylePrefix}${rawText}`;
+    return stripLeadingStyleCueText(rawText);
 }
 
 function buildRequestPayload(text, config) {
@@ -3378,6 +3461,14 @@ function shouldSkipDuplicatePlayback(requestKey, options = {}) {
     const now = Date.now();
     const isActiveSame = playbackState.activeRequestKey === requestKey && playbackState.mode !== "idle";
     if (isActiveSame) return true;
+    const sourceMessageId = Number.isFinite(Number(options.sourceMessageId)) ? Number(options.sourceMessageId) : null;
+    if (options.auto
+        && sourceMessageId !== null
+        && playbackState.lastAutoReadMessageId === sourceMessageId
+        && (now - Number(playbackState.lastAutoReadMessageAt || 0)) < AUTO_DUPLICATE_PLAYBACK_WINDOW_MS) {
+        return true;
+    }
+    if (!options.auto) return false;
     if (options.auto
         && playbackState.lastAutoReadKey === requestKey
         && (now - Number(playbackState.lastAutoReadAt || 0)) < AUTO_DUPLICATE_PLAYBACK_WINDOW_MS) {
@@ -3392,7 +3483,7 @@ function prepareTtsPlaybackSource(text, settings = getSettings()) {
 }
 
 function cleanPlaybackUnitText(text, settings = getSettings()) {
-    return prepareTtsReadableText(String(text || ""), settings.regex, { stripBubbleTags: true });
+    return stripLeadingStyleCueText(prepareTtsReadableText(String(text || ""), settings.regex, { stripBubbleTags: true }));
 }
 
 function stripKnownNonStoryBlocks(text) {
@@ -3447,19 +3538,14 @@ function inferInlineAudioTags(text, emotion) {
 }
 
 function applyAudioControlTags(text, emotion, profileType, settings = getSettings()) {
-    const source = String(text || "").trim();
+    const source = stripLeadingStyleCueText(String(text || "").trim());
     if (!source || settings.audioTagControlEnabled === false) return source;
-    if (/^\s*(?:[([]|（)/u.test(source)) return source;
+    if (/^\s*\[/u.test(source)) return source;
 
     const normalizedEmotion = normalizeAudioEmotion(emotion);
-    const styleTags = uniqueNames([
-        ...(normalizedEmotion ? [normalizedEmotion] : []),
-        ...inferAudioStyleTags(source, profileType),
-    ]).slice(0, 5);
     const inlineTags = inferInlineAudioTags(source, normalizedEmotion);
-    const stylePrefix = styleTags.length ? `(${styleTags.join(" ")})` : "";
     const inlinePrefix = inlineTags.map((tag) => `[${tag}]`).join("");
-    return `${stylePrefix}${inlinePrefix}${source}`;
+    return `${inlinePrefix}${source}`;
 }
 
 async function refreshPlaybackRoleGroup(settings, rawText) {
@@ -3511,12 +3597,6 @@ function buildPlaybackSegments(text, settings, roleGroup) {
         const speakerName = unit.profile ? profile.name : "旁白";
         for (const part of splitTtsSegments(cleanText)) {
             const rawText = part.trim();
-            const lastSegment = segments[segments.length - 1];
-            if (lastSegment
-                && lastSegment.profile?.uid === profile.uid
-                && normalizePlaybackFingerprintText(lastSegment.rawText) === normalizePlaybackFingerprintText(rawText)) {
-                continue;
-            }
             segments.push({
                 text: applyAudioControlTags(rawText, unit.emotion, profileType, settings),
                 rawText,
@@ -4102,9 +4182,17 @@ async function playTextSegments(text, options = {}) {
     playbackState.activeRequestKey = requestKey;
     playbackState.lastRequestKey = requestKey;
     playbackState.lastRequestAt = Date.now();
+    if (Number.isFinite(Number(sourceMessageId))) {
+        playbackState.lastPlayedMessageId = Number(sourceMessageId);
+        playbackState.lastPlayedMessageAt = playbackState.lastRequestAt;
+    }
     if (options.auto) {
         playbackState.lastAutoReadKey = requestKey;
         playbackState.lastAutoReadAt = playbackState.lastRequestAt;
+        if (Number.isFinite(Number(sourceMessageId))) {
+            playbackState.lastAutoReadMessageId = Number(sourceMessageId);
+            playbackState.lastAutoReadMessageAt = playbackState.lastRequestAt;
+        }
     }
     updateFloatingPlayer();
     await playCurrentSegment();
@@ -4262,7 +4350,7 @@ async function synthesizeAndPlay(text, options = {}) {
         activeAudioUrl = URL.createObjectURL(blob);
         activeAudio = options.attachPreview ? byId("st-mimo-preview-audio") : new Audio();
         activeAudio.src = activeAudioUrl;
-        applyAudioElementPlaybackRate(activeAudio, settings.ttsSpeedRate);
+        applyAudioElementPlaybackRate(activeAudio, getPlaybackRate(settings));
         activeAudio.onended = () => setStatus("播放完成", "ok");
         activeAudio.onerror = () => setStatus("音频播放失败", "error");
         await activeAudio.play();

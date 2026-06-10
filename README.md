@@ -16,7 +16,7 @@ Kept:
 - `mimo-v2.5-tts-voicedesign`
 - preset voice selection
 - voice design prompt editor
-- assistant-text style tags and inline audio tags
+- style cues sent as user instructions and inline assistant audio tags
 - per-message MiMo read button
 - floating button with full panel UI
 - light and dark UI modes
@@ -39,11 +39,13 @@ Removed:
 MiMo speech synthesis uses `POST /chat/completions`.
 
 - `messages[].role=user`: natural language control, voice design prompt, director notes.
-- `messages[].role=assistant`: target text, leading style tags, and inline audio tags.
+- `messages[].role=assistant`: target text and inline audio tags only. Profile style cues are moved to user instructions so they are not read as content.
 - `audio.voice`: only for `mimo-v2.5-tts`.
 - `audio.optimize_text_preview`: only for `mimo-v2.5-tts-voicedesign`.
 
 Official reference: https://platform.xiaomimimo.com/docs/zh-CN/usage-guide/speech-synthesis-v2.5
+
+The floating player's `+10/-10` buttons adjust persistent HTMLAudio playback speed after audio generation. They do not change MiMo synthesis speed or voice design text.
 
 Local reference used while reducing: `D:\Ai\2ai-voice-console`.
 
