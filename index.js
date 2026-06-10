@@ -17,6 +17,7 @@ const PLAYER_SUSPICIOUS_SEGMENT_LIMIT = 36;
 const TTS_SPEED_RATE_MIN = 0.5;
 const TTS_SPEED_RATE_MAX = 2.0;
 const TTS_SPEED_RATE_STEP = 0.1;
+const VOICE_CLONE_AUDIO_MAX_BYTES = 12 * 1024 * 1024;
 const AUTO_READ_DELAY_MS = 1200;
 const DUPLICATE_PLAYBACK_WINDOW_MS = 8000;
 const AUTO_DUPLICATE_PLAYBACK_WINDOW_MS = 60000;
@@ -26,6 +27,12 @@ const STYLE_CUE_WORDS = [
     "语速", "语气", "音色", "声线", "情绪", "风格", "口语", "亲近", "轻声", "温柔",
     "开心", "平静", "疑惑", "惊讶", "疲惫", "委屈", "撒娇", "无奈", "慵懒", "高冷",
 ];
+const DYNAMIC_STYLE_TAGS = new Set([
+    "平静", "冷静", "淡定", "开心", "高兴", "快乐", "愉快", "悲伤", "伤心", "难过",
+    "生气", "愤怒", "恼火", "紧张", "忐忑", "害怕", "恐惧", "惊讶", "震惊", "惊喜",
+    "兴奋", "激动", "疲惫", "累", "困", "委屈", "撒娇", "心虚", "无奈", "释然",
+    "冷漠", "温柔", "高冷", "慵懒", "俏皮", "认真", "严肃", "疑惑", "感激", "感谢", "感动", "欣慰",
+]);
 const FIXED_NARRATOR_DISPLAY_ID = "NARRATOR-TAIWAN-COLLEGE";
 const PLUGIN_API_ROOT = "/api/plugins/st-mimo-tts";
 const GENERATED_AUDIO_PUBLIC_DIR = "/scripts/extensions/third-party/st-mimo-tts/generated-audio";
@@ -34,6 +41,7 @@ const READING_HIGHLIGHT_NAME = "st-mimo-reading-highlight";
 const MIMO_MODELS = {
     PRESET: "mimo-v2.5-tts",
     VOICE_DESIGN: "mimo-v2.5-tts-voicedesign",
+    VOICE_CLONE: "mimo-v2.5-tts-voiceclone",
 };
 
 const PRESET_VOICES = [
@@ -98,11 +106,17 @@ const FIXED_NARRATOR_PROFILE = {
     director: "固定用于最新 LLM 回复朗读。14岁女高中生，清脆稚嫩、生活化、像和闺蜜窝在床上小声聊天；只朗读正文，不切换为角色音色。",
     voiceDesignPrompt: DESIGN_TEMPLATES.teenBestieNarrator,
     deliveryInstruction: "只朗读正文内容。不要读 @bubble、图片提示、系统标签、HTML、Markdown 代码块、隐藏思维、图片提示词或系统说明。保持14岁女高中生声线：清脆、稚嫩、轻快、自然，像和闺蜜窝在床上小声聊天。情绪要跟随正文和音频标签自然变化，不要播音腔、小说朗读腔、新闻腔、职业主播腔、成熟女人声或老太太声。",
-    stylePrefix: "(14岁女高中生 闺蜜聊天 床上小声聊天 清脆 稚嫩 自然)",
+    styleRole: "14岁女高中生闺蜜型旁白。她不是播音员、不是小说朗读者，而是熟悉用户、自然亲近的同龄感少女。",
+    styleScene: "夜里房间灯光很暗，她和闺蜜并排窝在床上，小声读 SillyTavern 最新正文给对方听。",
+    styleGuidance: "只朗读正文内容。不要读 @bubble、图片提示、系统标签、HTML、Markdown 代码块、隐藏思维或图片提示词。情绪跟随正文和动态音频标签自然变化，不要自行扩写原文。",
+    stylePrefix: "",
     model: MIMO_MODELS.VOICE_DESIGN,
     presetVoice: "mimo_default",
     format: "wav",
     optimizeTextPreview: false,
+    voiceCloneAudioData: "",
+    voiceCloneAudioName: "",
+    voiceCloneAudioMime: "",
 };
 
 const KNOWN_ROLE_VOICE_PRESETS = [
@@ -264,7 +278,6 @@ const KNOWN_ROLE_VOICE_PRESETS = [
     },
 ];
 
-const STYLE_TAGS = ["(温柔)", "(磁性)", "(慵懒)", "(怅然)", "(开心)", "(冷漠)", "(粤语)", "(东北话)", "(唱歌)"];
 const INLINE_TAGS = ["[吸气]", "[深呼吸]", "[叹气]", "[轻笑]", "[大笑]", "[哽咽]", "[小声]", "[语速加快]", "[提高音量]"];
 const MIMO_REGEX_PREFIX = "MiMo TTS";
 
@@ -334,9 +347,15 @@ const DEFAULT_SETTINGS = {
     presetVoice: "mimo_default",
     format: "wav",
     optimizeTextPreview: false,
-    stylePrefix: FIXED_NARRATOR_PROFILE.stylePrefix,
+    stylePrefix: "",
+    styleRole: FIXED_NARRATOR_PROFILE.styleRole,
+    styleScene: FIXED_NARRATOR_PROFILE.styleScene,
+    styleGuidance: FIXED_NARRATOR_PROFILE.styleGuidance,
     deliveryInstruction: FIXED_NARRATOR_PROFILE.deliveryInstruction,
     voiceDesignPrompt: FIXED_NARRATOR_PROFILE.voiceDesignPrompt,
+    voiceCloneAudioData: "",
+    voiceCloneAudioName: "",
+    voiceCloneAudioMime: "",
     helperFields: {
         genderAge: "",
         texture: "",
@@ -346,7 +365,7 @@ const DEFAULT_SETTINGS = {
         scene: "",
         era: "",
     },
-    testText: "(磁性)夜已经深了，城市还在呼吸。我是今晚陪你的人。",
+    testText: "夜已经深了，城市还在呼吸。我是今晚陪你的人。",
     activeProfile: {
         type: "narrator",
         narratorId: "",
@@ -466,7 +485,10 @@ function migrateLibrary(settings) {
             director: "用于旁白、系统叙述、环境描写和非角色台词。",
             voiceDesignPrompt: settings.voiceDesignPrompt || DESIGN_TEMPLATES.radio,
             deliveryInstruction: settings.deliveryInstruction,
-            stylePrefix: settings.stylePrefix,
+            styleRole: settings.styleRole,
+            styleScene: settings.styleScene,
+            styleGuidance: settings.styleGuidance || settings.deliveryInstruction,
+            stylePrefix: "",
             model: settings.model,
             presetVoice: settings.presetVoice,
             format: settings.format,
@@ -489,8 +511,7 @@ function migrateLibrary(settings) {
         ...settings.libraries.narrators,
         ...settings.libraries.roleGroups.flatMap((group) => Array.isArray(group.roles) ? group.roles : []),
     ]) {
-        profile.optimizeTextPreview = false;
-        if (!Array.isArray(profile.aliases)) profile.aliases = [];
+        normalizeProfile(profile, settings);
     }
 
     const fixedNarrator = ensureFixedNarrator(settings);
@@ -537,6 +558,25 @@ function ensureFixedNarrator(settings) {
     return narrator;
 }
 
+function normalizeProfile(profile, fallback = DEFAULT_SETTINGS) {
+    if (!profile || typeof profile !== "object") return profile;
+    profile.model = normalizeMimoModel(profile.model || fallback.model);
+    profile.optimizeTextPreview = false;
+    if (!Array.isArray(profile.aliases)) profile.aliases = [];
+    if (profile.presetVoice === undefined) profile.presetVoice = fallback.presetVoice || "mimo_default";
+    if (!profile.format) profile.format = fallback.format || "wav";
+    if (profile.stylePrefix === undefined) profile.stylePrefix = "";
+    if (profile.styleRole === undefined) profile.styleRole = profile.director || fallback.styleRole || "";
+    if (profile.styleScene === undefined) profile.styleScene = fallback.styleScene || "";
+    if (profile.styleGuidance === undefined) profile.styleGuidance = profile.deliveryInstruction || fallback.styleGuidance || fallback.deliveryInstruction || "";
+    if (profile.deliveryInstruction === undefined) profile.deliveryInstruction = profile.styleGuidance || fallback.deliveryInstruction || "";
+    if (profile.voiceDesignPrompt === undefined) profile.voiceDesignPrompt = fallback.voiceDesignPrompt || DESIGN_TEMPLATES.radio;
+    if (profile.voiceCloneAudioData === undefined) profile.voiceCloneAudioData = "";
+    if (profile.voiceCloneAudioName === undefined) profile.voiceCloneAudioName = "";
+    if (profile.voiceCloneAudioMime === undefined) profile.voiceCloneAudioMime = "";
+    return profile;
+}
+
 function saveSettings(options = {}) {
     saveSettingsDebounced();
     if (options.render) renderAll();
@@ -549,8 +589,8 @@ function createUid(prefix) {
 
 function createProfile(type, seed = {}) {
     const now = new Date().toISOString();
-    const model = seed.model || MIMO_MODELS.VOICE_DESIGN;
-    return {
+    const model = normalizeMimoModel(seed.model || MIMO_MODELS.VOICE_DESIGN);
+    return normalizeProfile({
         uid: seed.uid || createUid(type === "narrator" ? "nar" : "role"),
         displayId: seed.displayId || `${type === "narrator" ? "NARRATOR" : "ROLE"}-${Math.floor(Math.random() * 9000 + 1000)}`,
         name: seed.name || (type === "narrator" ? "新旁白" : "新角色"),
@@ -563,15 +603,21 @@ function createProfile(type, seed = {}) {
         format: seed.format || "wav",
         optimizeTextPreview: seed.optimizeTextPreview ?? false,
         stylePrefix: seed.stylePrefix || "",
+        styleRole: seed.styleRole || seed.director || "",
+        styleScene: seed.styleScene || "",
+        styleGuidance: seed.styleGuidance || seed.deliveryInstruction || DEFAULT_SETTINGS.styleGuidance,
         deliveryInstruction: seed.deliveryInstruction || DEFAULT_SETTINGS.deliveryInstruction,
         voiceDesignPrompt: seed.voiceDesignPrompt || DESIGN_TEMPLATES.radio,
+        voiceCloneAudioData: seed.voiceCloneAudioData || "",
+        voiceCloneAudioName: seed.voiceCloneAudioName || "",
+        voiceCloneAudioMime: seed.voiceCloneAudioMime || "",
         notes: seed.notes || "",
         syncGenerated: Boolean(seed.syncGenerated),
         syncSource: seed.syncSource || "",
         lastSyncedAt: seed.lastSyncedAt || "",
         createdAt: seed.createdAt || now,
         updatedAt: seed.updatedAt || now,
-    };
+    }, DEFAULT_SETTINGS);
 }
 
 function createGroup(seed = {}) {
@@ -649,6 +695,11 @@ function normalizeBaseUrl(value) {
     return baseUrl || DEFAULT_SETTINGS.baseUrl;
 }
 
+function normalizeMimoModel(value) {
+    const model = String(value || "").trim();
+    return Object.values(MIMO_MODELS).includes(model) ? model : MIMO_MODELS.VOICE_DESIGN;
+}
+
 function normalizeTtsSpeedRate(value) {
     const rate = Number(value);
     if (!Number.isFinite(rate)) return 1.0;
@@ -686,6 +737,11 @@ function isLikelyStyleCueText(value) {
     return compact.length <= 12 && !/[我你他她它们]/u.test(compact);
 }
 
+function isDynamicStyleTag(value) {
+    const source = unwrapStyleCueText(value);
+    return Boolean(source && source.length <= 12 && DYNAMIC_STYLE_TAGS.has(source));
+}
+
 function stripLeadingStyleCueText(text) {
     let result = String(text || "").trim();
     let changed = true;
@@ -694,6 +750,7 @@ function stripLeadingStyleCueText(text) {
         result = result.replace(/^\s*(?:\(([^)]{1,96})\)|（([^）]{1,96})）|\[([^\]]{1,96})\]|【([^】]{1,96})】)\s*/u, (match, round, cnRound, square, cnSquare) => {
             const cue = round || cnRound || square || cnSquare || "";
             if (square && INLINE_TAGS.includes(`[${square}]`)) return match;
+            if ((round || cnRound) && isDynamicStyleTag(cue)) return match;
             if (!isLikelyStyleCueText(cue)) return match;
             changed = true;
             return "";
@@ -709,12 +766,6 @@ function stripLeadingStyleCueText(text) {
         }
     }
     return result;
-}
-
-function buildStyleCueInstruction(stylePrefix) {
-    const cue = unwrapStyleCueText(stylePrefix);
-    if (!cue || !isLikelyStyleCueText(cue)) return "";
-    return `风格参考：${cue}。这是合成控制提示，不是朗读正文；不要把这些词读出来。`;
 }
 
 function buildTtsSpeedInstruction(value) {
@@ -809,9 +860,15 @@ function buildPresetOptions(selected) {
 }
 
 function buildModelOptions(selected) {
-    return `
-        <option value="${MIMO_MODELS.VOICE_DESIGN}" ${selected === MIMO_MODELS.VOICE_DESIGN ? "selected" : ""}>mimo-v2.5-tts-voicedesign</option>
-        <option value="${MIMO_MODELS.PRESET}" ${selected === MIMO_MODELS.PRESET ? "selected" : ""}>mimo-v2.5-tts</option>`;
+    const current = normalizeMimoModel(selected);
+    const options = [
+        { value: MIMO_MODELS.VOICE_DESIGN, label: "mimo-v2.5-tts-voicedesign / 文本设定音色" },
+        { value: MIMO_MODELS.PRESET, label: "mimo-v2.5-tts / 预制音色" },
+        { value: MIMO_MODELS.VOICE_CLONE, label: "mimo-v2.5-tts-voiceclone / 参考音频克隆" },
+    ];
+    return options.map((option) => (
+        `<option value="${option.value}" ${current === option.value ? "selected" : ""}>${escapeHtml(option.label)}</option>`
+    )).join("");
 }
 
 function buildFormatOptions(selected) {
@@ -873,16 +930,24 @@ function getActiveProfile(settings = getSettings()) {
 }
 
 function getProfileConfig(profile, settings) {
+    const normalizedProfile = normalizeProfile(profile || {}, settings);
     return {
         apiKey: settings.apiKey,
         baseUrl: settings.baseUrl,
-        model: profile?.model || settings.model,
-        presetVoice: profile?.presetVoice || settings.presetVoice,
-        format: profile?.format || settings.format,
+        model: normalizeMimoModel(normalizedProfile?.model || settings.model),
+        presetVoice: normalizedProfile?.presetVoice || settings.presetVoice,
+        format: normalizedProfile?.format || settings.format,
         optimizeTextPreview: false,
-        stylePrefix: profile?.stylePrefix ?? settings.stylePrefix,
-        deliveryInstruction: profile?.deliveryInstruction ?? settings.deliveryInstruction,
-        voiceDesignPrompt: profile?.voiceDesignPrompt || settings.voiceDesignPrompt,
+        stylePrefix: normalizedProfile?.stylePrefix ?? settings.stylePrefix,
+        director: normalizedProfile?.director || "",
+        styleRole: normalizedProfile?.styleRole ?? settings.styleRole,
+        styleScene: normalizedProfile?.styleScene ?? settings.styleScene,
+        styleGuidance: normalizedProfile?.styleGuidance ?? settings.styleGuidance,
+        deliveryInstruction: normalizedProfile?.deliveryInstruction ?? settings.deliveryInstruction,
+        voiceDesignPrompt: normalizedProfile?.voiceDesignPrompt || settings.voiceDesignPrompt,
+        voiceCloneAudioData: normalizedProfile?.voiceCloneAudioData || settings.voiceCloneAudioData || "",
+        voiceCloneAudioName: normalizedProfile?.voiceCloneAudioName || settings.voiceCloneAudioName || "",
+        voiceCloneAudioMime: normalizedProfile?.voiceCloneAudioMime || settings.voiceCloneAudioMime || "",
         ttsSpeedRate: settings.ttsSpeedRate ?? 1.0,
         audioTagControlEnabled: settings.audioTagControlEnabled !== false,
     };
@@ -1253,16 +1318,13 @@ function renderLabPage(settings) {
 <section class="st-mimo-page">
     <div class="st-mimo-page-heading">
         <h2>试听与标签</h2>
-        <p>当前使用：${escapeHtml(activeProfile?.profile?.name || "未选择")}。开头风格标签和中途音频标签都会放在 assistant 文本中。</p>
+        <p>当前使用：${escapeHtml(activeProfile?.profile?.name || "未选择")}。角色情绪会按正文格式自动生成，下面只手动插入中途音频标签。</p>
     </div>
     <div class="st-mimo-card">
         <label class="st-mimo-field">
             <span>测试文本</span>
             <textarea id="st-mimo-test-text" class="st-mimo-input" rows="7" data-settings-field="testText">${escapeHtml(settings.testText)}</textarea>
         </label>
-        <div class="st-mimo-tag-row">
-            ${STYLE_TAGS.map((tag) => `<button type="button" class="st-mimo-tag" data-mimo-action="set-style-prefix" data-value="${attr(tag)}">${escapeHtml(tag)}</button>`).join("")}
-        </div>
         <div class="st-mimo-tag-row">
             ${INLINE_TAGS.map((tag) => `<button type="button" class="st-mimo-tag" data-mimo-action="insert-inline-tag" data-value="${attr(tag)}">${escapeHtml(tag)}</button>`).join("")}
         </div>
@@ -1420,8 +1482,52 @@ function renderGroupEditor(group) {
 </div>`;
 }
 
+function renderVoiceCloneAudioField(profile, type) {
+    const hasAudio = Boolean(profile.voiceCloneAudioData);
+    const fileName = profile.voiceCloneAudioName || "未上传参考音频";
+    const mime = profile.voiceCloneAudioMime || "wav / mp3";
+    return `
+        <div class="st-mimo-field wide st-mimo-voiceclone-field">
+            <span>参考音频</span>
+            <div class="st-mimo-upload-row">
+                <label class="st-mimo-secondary st-mimo-upload-button">
+                    <i class="fa-solid fa-upload"></i>
+                    上传/替换参考音频
+                    <input type="file" accept=".wav,.mp3,audio/wav,audio/mpeg,audio/mp3" data-profile-audio="voiceClone" data-profile-type="${type}">
+                </label>
+                ${hasAudio ? `<button type="button" class="st-mimo-secondary" data-mimo-action="clear-voice-clone-audio" data-profile-type="${type}">
+                    <i class="fa-solid fa-trash-can"></i>
+                    清除
+                </button>` : ""}
+            </div>
+            <div class="st-mimo-audio-pill ${hasAudio ? "ready" : ""}">
+                <i class="fa-solid ${hasAudio ? "fa-wave-square" : "fa-circle-exclamation"}"></i>
+                <span>${escapeHtml(fileName)}</span>
+                <small>${escapeHtml(mime)}</small>
+            </div>
+            <p class="st-mimo-field-help">voiceclone 使用这里的 wav/mp3 作为克隆参考音频；不会显示预制音色，也不会发送 Voice Design Prompt。</p>
+        </div>`;
+}
+
+function renderVoiceDesignPromptField(profile, type) {
+    return `
+        <label class="st-mimo-field wide">
+            <span>音色描述 Voice Design Prompt</span>
+            <textarea class="st-mimo-input" rows="8" data-profile-type="${type}" data-profile-field="voiceDesignPrompt">${escapeHtml(profile.voiceDesignPrompt)}</textarea>
+        </label>
+        <div class="st-mimo-field wide st-mimo-model-help">
+            <strong>写法参考</strong>
+            <span>建议 1-4 句，明确性别年龄、音色质感、情绪语气、语速节奏；可补充角色人设、说话风格、场景和年代参照。避免互相冲突的设定、混响/EQ/压缩等后期词，以及“普通、正常”这类模糊词。</span>
+        </div>`;
+}
+
 function renderProfileEditor(profile, type) {
+    normalizeProfile(profile);
     const isActive = isProfileActive(profile, type);
+    const model = normalizeMimoModel(profile.model);
+    const isPreset = model === MIMO_MODELS.PRESET;
+    const isVoiceDesign = model === MIMO_MODELS.VOICE_DESIGN;
+    const isVoiceClone = model === MIMO_MODELS.VOICE_CLONE;
     return `
 <div class="st-mimo-editor">
     <div class="st-mimo-editor-header">
@@ -1458,47 +1564,41 @@ function renderProfileEditor(profile, type) {
         </label>` : ""}
         <label class="st-mimo-field">
             <span>模型</span>
-            <select class="st-mimo-input" data-profile-type="${type}" data-profile-field="model">${buildModelOptions(profile.model)}</select>
-        </label>
-        <label class="st-mimo-field">
-            <span>预置音色</span>
-            <select class="st-mimo-input" data-profile-type="${type}" data-profile-field="presetVoice">${buildPresetOptions(profile.presetVoice)}</select>
+            <select class="st-mimo-input" data-profile-type="${type}" data-profile-field="model">${buildModelOptions(model)}</select>
         </label>
         <label class="st-mimo-field">
             <span>输出格式</span>
             <select class="st-mimo-input" data-profile-type="${type}" data-profile-field="format">${buildFormatOptions(profile.format)}</select>
         </label>
-        <label class="st-mimo-check">
-            <input type="checkbox" data-profile-type="${type}" data-profile-field="optimizeTextPreview" disabled>
-            voicedesign 文本优化 / 扩写（已强制关闭）
+        ${isPreset ? `<label class="st-mimo-field wide">
+            <span>预置音色</span>
+            <select class="st-mimo-input" data-profile-type="${type}" data-profile-field="presetVoice">${buildPresetOptions(profile.presetVoice)}</select>
+        </label>` : ""}
+        ${isVoiceClone ? renderVoiceCloneAudioField(profile, type) : ""}
+        ${isVoiceDesign ? renderVoiceDesignPromptField(profile, type) : ""}
+        <label class="st-mimo-field wide">
+            <span>风格控制：【角色】</span>
+            <textarea class="st-mimo-input" rows="3" data-profile-type="${type}" data-profile-field="styleRole" placeholder="说话人是谁、年龄/身份、人设、默认声线边界。">${escapeHtml(profile.styleRole)}</textarea>
         </label>
         <label class="st-mimo-field wide">
-            <span>导演</span>
-            <textarea class="st-mimo-input" rows="3" data-profile-type="${type}" data-profile-field="director">${escapeHtml(profile.director)}</textarea>
+            <span>风格控制：【场景】</span>
+            <textarea class="st-mimo-input" rows="3" data-profile-type="${type}" data-profile-field="styleScene" placeholder="当前朗读发生的环境、距离感、对谁说话。">${escapeHtml(profile.styleScene)}</textarea>
         </label>
         <label class="st-mimo-field wide">
-            <span>音色描述 Voice Design Prompt</span>
-            <textarea class="st-mimo-input" rows="8" data-profile-type="${type}" data-profile-field="voiceDesignPrompt">${escapeHtml(profile.voiceDesignPrompt)}</textarea>
-        </label>
-        <label class="st-mimo-field wide">
-            <span>朗读指导</span>
-            <textarea class="st-mimo-input" rows="3" data-profile-type="${type}" data-profile-field="deliveryInstruction">${escapeHtml(profile.deliveryInstruction)}</textarea>
-        </label>
-        <label class="st-mimo-field">
-            <span>默认风格标签</span>
-            <input class="st-mimo-input" data-profile-type="${type}" data-profile-field="stylePrefix" value="${attr(profile.stylePrefix)}" placeholder="例如：(温柔)">
+            <span>风格控制：【指导】</span>
+            <textarea class="st-mimo-input" rows="4" data-profile-type="${type}" data-profile-field="styleGuidance" placeholder="朗读边界、情绪表现、不要读出的格式标签、不要扩写原文等。">${escapeHtml(profile.styleGuidance)}</textarea>
         </label>
         <label class="st-mimo-field wide">
             <span>备注</span>
             <textarea class="st-mimo-input" rows="3" data-profile-type="${type}" data-profile-field="notes">${escapeHtml(profile.notes)}</textarea>
         </label>
     </div>
-    <div class="st-mimo-template-row">
+    ${isVoiceDesign ? `<div class="st-mimo-template-row">
         <button type="button" class="st-mimo-secondary" data-mimo-action="apply-template" data-template="queen" data-profile-type="${type}">低音御姐</button>
         <button type="button" class="st-mimo-secondary" data-mimo-action="apply-template" data-template="radio" data-profile-type="${type}">深夜电台</button>
         <button type="button" class="st-mimo-secondary" data-mimo-action="apply-template" data-template="teen" data-profile-type="${type}">少年戏谑</button>
         <button type="button" class="st-mimo-secondary" data-mimo-action="apply-template" data-template="narrator" data-profile-type="${type}">评书先生</button>
-    </div>
+    </div>` : ""}
 </div>`;
 }
 
@@ -1912,7 +2012,7 @@ async function handleClick(event) {
             case "open-audio-folder": await openGeneratedAudioFolder(); break;
             case "toggle-fullscreen": await toggleFullscreen(); break;
             case "insert-inline-tag": insertAtCursor(byId("st-mimo-test-text"), actionTarget.dataset.value); break;
-            case "set-style-prefix": setActiveStylePrefix(actionTarget.dataset.value); break;
+            case "clear-voice-clone-audio": clearProfileVoiceCloneAudio(actionTarget.dataset.profileType); break;
             case "apply-template": applyTemplate(actionTarget.dataset.profileType, actionTarget.dataset.template); break;
             default:
                 if (action.startsWith("activate-")) activateProfile(action.replace("activate-", ""), actionTarget.dataset.id);
@@ -1956,11 +2056,23 @@ function handleInput(event) {
     }
 }
 
-function handleChange(event) {
+async function handleChange(event) {
     const target = event.target;
     if (target?.id === IMPORT_INPUT_ID) {
         importAll(target.files?.[0]);
         target.value = "";
+        return;
+    }
+
+    if (target?.dataset?.profileAudio === "voiceClone") {
+        try {
+            await updateProfileVoiceCloneAudio(target.dataset.profileType, target.files?.[0]);
+        } catch (error) {
+            console.error("[MiMo TTS] voice clone upload failed", error);
+            notify("error", `参考音频载入失败：${error?.message || error}`);
+        } finally {
+            target.value = "";
+        }
         return;
     }
 
@@ -2017,11 +2129,67 @@ function updateProfileField(type, field, value) {
     const settings = getSettings();
     const profile = getEditableProfile(settings, type);
     if (!profile) return;
-    profile[field] = field === "aliases"
-        ? uniqueNames(String(value || "").split(/[,，\n/／]+/))
-        : value;
+    if (field === "aliases") {
+        profile[field] = uniqueNames(String(value || "").split(/[,，\n/／]+/));
+    } else if (field === "model") {
+        profile[field] = normalizeMimoModel(value);
+    } else {
+        profile[field] = value;
+    }
     profile.updatedAt = new Date().toISOString();
     saveSettings();
+}
+
+function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(reader.error || new Error("参考音频读取失败。"));
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.readAsDataURL(file);
+    });
+}
+
+function getVoiceCloneAudioMime(file) {
+    const name = String(file?.name || "").toLowerCase();
+    const type = String(file?.type || "").toLowerCase();
+    if (type.includes("mpeg") || type.includes("mp3") || name.endsWith(".mp3")) return "audio/mpeg";
+    if (type.includes("wav") || name.endsWith(".wav")) return "audio/wav";
+    return "";
+}
+
+async function updateProfileVoiceCloneAudio(type, file) {
+    if (!file) return;
+    const mime = getVoiceCloneAudioMime(file);
+    if (!mime) {
+        notify("warning", "参考音频只支持 wav 或 mp3。");
+        return;
+    }
+    if (file.size > VOICE_CLONE_AUDIO_MAX_BYTES) {
+        notify("warning", `参考音频不能超过 ${Math.round(VOICE_CLONE_AUDIO_MAX_BYTES / 1024 / 1024)}MB。`);
+        return;
+    }
+    const settings = getSettings();
+    const profile = getEditableProfile(settings, type);
+    if (!profile) return;
+    const dataUrl = await readFileAsDataUrl(file);
+    const base64 = dataUrl.includes(",") ? dataUrl.split(",").pop() : dataUrl;
+    profile.voiceCloneAudioData = `data:${mime};base64,${base64}`;
+    profile.voiceCloneAudioName = file.name || "reference-audio";
+    profile.voiceCloneAudioMime = mime;
+    profile.updatedAt = new Date().toISOString();
+    saveSettings({ render: true });
+    notify("info", `已载入参考音频：${profile.voiceCloneAudioName}`);
+}
+
+function clearProfileVoiceCloneAudio(type) {
+    const settings = getSettings();
+    const profile = getEditableProfile(settings, type);
+    if (!profile) return;
+    profile.voiceCloneAudioData = "";
+    profile.voiceCloneAudioName = "";
+    profile.voiceCloneAudioMime = "";
+    profile.updatedAt = new Date().toISOString();
+    saveSettings({ render: true });
 }
 
 function updateGroupField(field, value) {
@@ -2223,17 +2391,6 @@ function applyTemplate(type, key) {
     saveSettings({ render: true });
 }
 
-function setActiveStylePrefix(value) {
-    const settings = getSettings();
-    const active = getActiveProfile(settings);
-    if (active?.profile) {
-        active.profile.stylePrefix = value;
-    } else {
-        settings.stylePrefix = value;
-    }
-    saveSettings({ render: true });
-}
-
 function importCurrentCharacter() {
     const character = getCurrentCharacterCard();
     if (!character) {
@@ -2248,6 +2405,9 @@ function importCurrentCharacter() {
         sourceCharacter: character.name || "",
         director: buildCharacterDirector(character),
         voiceDesignPrompt: buildCharacterVoicePrompt(character),
+        styleRole: buildCharacterDirector(character),
+        styleScene: "从当前 SillyTavern 角色卡导入，按当前正文场景自然说话。",
+        styleGuidance: `只朗读 ${character.name || "当前角色"} 的台词正文。不要读角色名、格式标签、图片提示词、系统说明或 Markdown 控制符。按文本情绪自然变化，不要扩写原文。`,
         notes: "从当前 SillyTavern 角色卡导入。",
     });
 }
@@ -2640,7 +2800,7 @@ function mergeSyncedRole(existing, seed) {
     if (generated) {
         Object.assign(existing, seed, preserved);
     } else {
-        for (const field of ["displayId", "aliases", "avatar", "sourceCharacter", "director", "voiceDesignPrompt", "deliveryInstruction", "stylePrefix", "notes"]) {
+        for (const field of ["displayId", "aliases", "avatar", "sourceCharacter", "director", "voiceDesignPrompt", "deliveryInstruction", "stylePrefix", "styleRole", "styleScene", "styleGuidance", "notes"]) {
             if (field === "aliases") {
                 if ((!Array.isArray(existing.aliases) || !existing.aliases.length) && Array.isArray(seed.aliases)) existing.aliases = seed.aliases;
                 continue;
@@ -2674,6 +2834,11 @@ function buildRoleSeed(roleName, character, contextData) {
         voiceDesignPrompt: preset ? buildKnownRoleVoicePrompt(preset, snippets) : (character ? buildCharacterVoicePrompt(character) : buildRoleVoicePrompt(resolvedRoleName, snippets)),
         deliveryInstruction: `只朗读 ${resolvedRoleName} 的台词正文。不要读角色名、@bubble 标签、情绪标签、图片提示词、系统说明或 Markdown 控制符。保持该角色的固定声线，不要切换成旁白。可按 @bubble 或文本情绪使用 MiMo 音频标签控制语气，但不要扩写原文。`,
         stylePrefix: "",
+        styleRole: preset
+            ? `${preset.name}。${preset.persona} 声线参考：${preset.age}；${preset.texture}`
+            : `${resolvedRoleName}。${character ? buildCharacterDirector(character) : "从当前角色卡、群聊或聊天说话人中确认的角色。"}`,
+        styleScene: snippets ? `当前上下文片段：\n${snippets}` : "在当前 SillyTavern 正文场景中自然说话。",
+        styleGuidance: `只朗读 ${resolvedRoleName} 的台词正文。不要读角色名、@bubble 标签、情绪标签、图片提示词、系统说明或 Markdown 控制符。保持该角色的固定声线，不要切换成旁白；可按 @bubble 或文本情绪使用 MiMo 音频标签控制语气，但不要扩写原文。`,
         model: MIMO_MODELS.VOICE_DESIGN,
         format: "wav",
         optimizeTextPreview: false,
@@ -3168,16 +3333,29 @@ async function importAll(file) {
     }
 }
 
+function buildStyleControlInstruction(config) {
+    const role = String(config.styleRole || config.director || "").trim();
+    const scene = String(config.styleScene || "").trim();
+    const guidance = String(config.styleGuidance || config.deliveryInstruction || "").trim();
+    const sections = [
+        role && `【角色】\n${role}`,
+        scene && `【场景】\n${scene}`,
+        guidance && `【指导】\n${guidance}`,
+    ].filter(Boolean);
+    if (!sections.length) return "";
+    return `风格控制（合成控制，不是朗读正文；不要读出字段名或说明文字）：\n${sections.join("\n\n")}`;
+}
+
 function buildUserContent(config) {
-    const delivery = String(config.deliveryInstruction || "").trim();
+    const model = normalizeMimoModel(config.model);
     const speedInstruction = buildTtsSpeedInstruction(config.ttsSpeedRate);
-    const styleInstruction = buildStyleCueInstruction(config.stylePrefix);
-    if (config.model === MIMO_MODELS.VOICE_DESIGN) {
+    const styleControl = buildStyleControlInstruction(config);
+    if (model === MIMO_MODELS.VOICE_DESIGN) {
         const design = String(config.voiceDesignPrompt || "").trim();
         if (!design) throw new Error("Voice Design Prompt 不能为空。");
-        return [design, styleInstruction, speedInstruction, delivery && `朗读指导：${delivery}`].filter(Boolean).join("\n\n");
+        return [`音色描述 Voice Design Prompt：\n${design}`, styleControl, speedInstruction].filter(Boolean).join("\n\n");
     }
-    return [styleInstruction, speedInstruction, delivery].filter(Boolean).join("\n\n");
+    return [styleControl, speedInstruction].filter(Boolean).join("\n\n");
 }
 
 function applyStylePrefix(text, config) {
@@ -3189,17 +3367,25 @@ function buildRequestPayload(text, config) {
     const assistantContent = applyStylePrefix(text, config);
     if (!assistantContent) throw new Error("朗读文本不能为空。");
 
+    const model = normalizeMimoModel(config.model);
     const userContent = buildUserContent(config);
     const messages = [];
     if (userContent) messages.push({ role: "user", content: userContent });
     messages.push({ role: "assistant", content: assistantContent });
 
-    const audio = { format: config.format };
-    if (config.model === MIMO_MODELS.PRESET) audio.voice = config.presetVoice || "mimo_default";
-    audio.optimize_text_preview = false;
+    const audio = { format: config.format || "wav" };
+    if (model === MIMO_MODELS.PRESET) {
+        audio.voice = config.presetVoice || "mimo_default";
+    } else if (model === MIMO_MODELS.VOICE_CLONE) {
+        const cloneAudio = String(config.voiceCloneAudioData || "").trim();
+        if (!cloneAudio) throw new Error("voiceclone 模型需要先上传参考音频。");
+        audio.voice = cloneAudio;
+    } else if (config.optimizeTextPreview === true) {
+        audio.optimize_text_preview = true;
+    }
 
     return {
-        model: config.model,
+        model,
         messages,
         audio,
     };
@@ -3527,7 +3713,8 @@ function normalizeAudioEmotion(value) {
         [/^(惊讶|震惊|惊喜)$/u, "惊讶"],
         [/^(兴奋|激动)$/u, "兴奋"],
         [/^(疲惫|累|困|有气无力)$/u, "疲惫"],
-        [/^(委屈|撒娇|心虚|无奈|释然|冷漠|温柔|高冷|慵懒|俏皮|认真|严肃)$/u, source],
+        [/^(感激|感谢|感动|欣慰)$/u, "感激"],
+        [/^(委屈|撒娇|心虚|无奈|释然|冷漠|温柔|高冷|慵懒|俏皮|认真|严肃|疑惑)$/u, source],
     ];
     for (const [pattern, tag] of aliases) {
         if (pattern.test(source)) return tag;
@@ -3538,16 +3725,15 @@ function normalizeAudioEmotion(value) {
 function inferAudioStyleTags(text, profileType) {
     const source = String(text || "");
     const tags = [];
-    if (profileType === "narrator") tags.push("14岁女高中生", "闺蜜聊天", "小声", "自然");
     if (/[?？]$/.test(source.trim())) tags.push("疑惑");
     if (/[!！]{1,}$/.test(source.trim())) tags.push("惊讶");
     if (/哈|哈哈|笑|噗|乐了/u.test(source)) tags.push("开心");
+    if (/谢谢|多谢|感激|破费|麻烦你/u.test(source)) tags.push("感激");
     if (/唉|叹|无奈|算了/u.test(source)) tags.push("无奈");
     if (/累|困|疲惫|有气无力/u.test(source)) tags.push("疲惫");
     if (/紧张|慌|怕|害怕|糟了/u.test(source)) tags.push("紧张");
     if (/哭|泪|哽咽|委屈/u.test(source)) tags.push("委屈");
-    if (!tags.length && profileType === "role") tags.push("自然");
-    return uniqueNames(tags);
+    return uniqueNames(tags).filter((tag) => DYNAMIC_STYLE_TAGS.has(tag));
 }
 
 function inferInlineAudioTags(text, emotion) {
@@ -3557,19 +3743,22 @@ function inferInlineAudioTags(text, emotion) {
     if (/唉|叹|无奈/u.test(source) || emotion === "无奈") tags.push("叹气");
     if (/深呼吸|冷静/u.test(source) || emotion === "紧张") tags.push("深呼吸");
     if (/哽咽|哭|眼泪/u.test(source)) tags.push("哽咽");
-    if (/累|困|疲惫/u.test(source) || emotion === "疲惫") tags.push("疲惫");
+    if (/累|困|疲惫/u.test(source) || emotion === "疲惫") tags.push("小声");
     return uniqueNames(tags).slice(0, 2);
 }
 
 function applyAudioControlTags(text, emotion, profileType, settings = getSettings()) {
     const source = stripLeadingStyleCueText(String(text || "").trim());
     if (!source || settings.audioTagControlEnabled === false) return source;
-    if (/^\s*\[/u.test(source)) return source;
 
     const normalizedEmotion = normalizeAudioEmotion(emotion);
+    const styleTags = uniqueNames([normalizedEmotion, ...inferAudioStyleTags(source, profileType)])
+        .filter((tag) => DYNAMIC_STYLE_TAGS.has(tag))
+        .slice(0, 2);
+    const stylePrefix = styleTags.map((tag) => `(${tag})`).join("");
     const inlineTags = inferInlineAudioTags(source, normalizedEmotion);
     const inlinePrefix = inlineTags.map((tag) => `[${tag}]`).join("");
-    return `${inlinePrefix}${source}`;
+    return `${stylePrefix}${inlinePrefix}${source}`;
 }
 
 async function refreshPlaybackRoleGroup(settings, rawText) {
@@ -3740,7 +3929,10 @@ function createTransientSpeakerProfile(name, emotion = "") {
         model: MIMO_MODELS.VOICE_DESIGN,
         presetVoice: "mimo_default",
         format: "wav",
-        stylePrefix: `(${style.tags.join(" ")})`,
+        stylePrefix: "",
+        styleRole: `${speakerName}，当前段落里的临时说话人。${style.texture}`,
+        styleScene: "在当前 SillyTavern 正文场景里说一句或少量台词，然后声音交还给旁白或固定角色。",
+        styleGuidance: `只朗读 ${speakerName} 的这一句台词正文。不要读角色名、@bubble、括号、情绪标签或旁白。${emotion ? `当前情绪：${emotion}。` : "按台词自然判断情绪。"}保持临时配角声线，与固定旁白区分，但不要抢戏。`,
         deliveryInstruction: `只朗读 ${speakerName} 的这一句台词正文。不要读角色名、@bubble、括号、情绪标签或旁白。保持临时配角声线，与固定旁白区分，但不要抢戏。`,
         voiceDesignPrompt: buildTransientSpeakerVoicePrompt(speakerName, style, emotion),
         notes: "MiMo 播放时临时生成，不属于角色组库。",

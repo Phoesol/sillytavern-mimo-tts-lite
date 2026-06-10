@@ -14,9 +14,12 @@ Kept:
 
 - `mimo-v2.5-tts`
 - `mimo-v2.5-tts-voicedesign`
-- preset voice selection
-- voice design prompt editor
-- style cues sent as user instructions and inline assistant audio tags
+- `mimo-v2.5-tts-voiceclone`
+- preset voice selection for `mimo-v2.5-tts` only
+- Voice Design Prompt editor for `mimo-v2.5-tts-voicedesign` only
+- reference audio upload for `mimo-v2.5-tts-voiceclone`
+- shared style control fields: `【角色】`, `【场景】`, `【指导】`
+- dynamic style tags inferred from speaker format and emotion, plus inline assistant audio tags
 - per-message MiMo read button
 - floating button with full panel UI
 - light and dark UI modes
@@ -32,16 +35,31 @@ Removed:
 - ambient sound
 - sound effects
 - playlist and background audio mixing
-- Minimax, Edge, local audio helpers, clone storage, and unrelated dispatch code
+- Minimax, Edge, local audio helpers, legacy clone storage, and unrelated dispatch code
 
 ## MiMo request layout
 
 MiMo speech synthesis uses `POST /chat/completions`.
 
 - `messages[].role=user`: natural language control, voice design prompt, director notes.
-- `messages[].role=assistant`: target text and inline audio tags only. Profile style cues are moved to user instructions so they are not read as content.
-- `audio.voice`: only for `mimo-v2.5-tts`.
-- `audio.optimize_text_preview`: only for `mimo-v2.5-tts-voicedesign`.
+- `messages[].role=assistant`: target text, dynamic `(emotion)` tags, and inline audio tags only.
+- `audio.voice`: preset voice ID only for `mimo-v2.5-tts`; uploaded audio data URL only for `mimo-v2.5-tts-voiceclone`; omitted for `mimo-v2.5-tts-voicedesign`.
+- `Voice Design Prompt`: sent only for `mimo-v2.5-tts-voicedesign`.
+- `audio.optimize_text_preview`: only valid for `mimo-v2.5-tts-voicedesign`; the extension keeps it off by default.
+
+Voice Design Prompt writing guidance:
+
+- Keep it short, usually 1-4 sentences.
+- Prefer concrete traits: age/gender, timbre, emotional tone, pace, role/persona, speaking style, scene, and era reference.
+- Avoid conflicting traits, post-processing terms such as reverb/EQ/compression, and vague words such as "ordinary" or "normal".
+
+Speaker format example:
+
+```text
+@bubble:林远帆|感激|[这太破费了，郑先生。]
+```
+
+The extension parses it as speaker `林远帆`, dynamic style tag `(感激)`, and TTS content `这太破费了，郑先生。`.
 
 Official reference: https://platform.xiaomimimo.com/docs/zh-CN/usage-guide/speech-synthesis-v2.5
 
@@ -59,6 +77,7 @@ The export file uses `st-mimo-tts/full-export/v1` and stores the full extension 
 - narrator profiles
 - role groups and role profiles
 - voice design prompts, director notes, avatars, IDs, style prefixes, and notes
+- shared style control fields and optional voiceclone reference audio data
 
 Importing the file replaces the current extension settings with the exported settings.
 

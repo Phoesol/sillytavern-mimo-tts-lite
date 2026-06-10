@@ -451,6 +451,76 @@
     grid-column: 1 / -1;
 }
 
+.st-mimo-field-help,
+.st-mimo-model-help span {
+    margin: 0;
+    color: var(--mimo-muted);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.st-mimo-model-help {
+    gap: 5px;
+    padding: 9px 10px;
+    border: 1px solid var(--mimo-border);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--mimo-panel-2) 78%, transparent);
+}
+
+.st-mimo-model-help strong {
+    font-size: 13px;
+}
+
+.st-mimo-upload-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.st-mimo-upload-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.st-mimo-upload-button input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.st-mimo-audio-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 36px;
+    padding: 8px 10px;
+    border: 1px solid var(--mimo-border);
+    border-radius: 6px;
+    background: var(--mimo-input);
+    color: var(--mimo-muted);
+}
+
+.st-mimo-audio-pill.ready {
+    color: var(--mimo-text);
+    border-color: color-mix(in srgb, var(--mimo-accent) 55%, var(--mimo-border));
+    background: color-mix(in srgb, var(--mimo-accent) 12%, var(--mimo-input));
+}
+
+.st-mimo-audio-pill span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.st-mimo-audio-pill small {
+    margin-left: auto;
+    color: var(--mimo-muted);
+    white-space: nowrap;
+}
+
 .st-mimo-check {
     display: flex;
     align-items: center;
