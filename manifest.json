@@ -1,0 +1,11 @@
+{
+    "display_name": "MiMo TTS Lite",
+    "loading_order": 9,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "damoshen123 fork, MiMo TTS Lite",
+    "version": "1.2.0",
+    "homePage": "https://github.com/Phoesol/sillytavern-mimo-tts-lite"
+}
