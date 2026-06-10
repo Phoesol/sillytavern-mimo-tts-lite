@@ -23,7 +23,7 @@ Kept:
 - per-message MiMo read button
 - floating button with full panel UI
 - light and dark UI modes
-- narrator library
+- narrator library with three fixed narrator presets: 14-year crisp/pure/sweet, 18-year bright/youthful, and 22-year lounge-anchor soothing/magnetic
 - character group library
 - one-click full export and import, including API and library data
 - sync skill for the current character card, group chat members, non-user speakers, and existing character cards referenced by current content

@@ -33,7 +33,9 @@ const DYNAMIC_STYLE_TAGS = new Set([
     "兴奋", "激动", "疲惫", "累", "困", "委屈", "撒娇", "心虚", "无奈", "释然",
     "冷漠", "温柔", "高冷", "慵懒", "俏皮", "认真", "严肃", "疑惑", "感激", "感谢", "感动", "欣慰",
 ]);
-const FIXED_NARRATOR_DISPLAY_ID = "NARRATOR-TAIWAN-COLLEGE";
+const FIXED_NARRATOR_DISPLAY_ID = "NARRATOR-TEEN-14-BESTIE";
+const FIXED_NARRATOR_18_DISPLAY_ID = "NARRATOR-YOUTH-18-BRIGHT";
+const FIXED_NARRATOR_22_DISPLAY_ID = "NARRATOR-ANCHOR-22-LOUNGE";
 const PLUGIN_API_ROOT = "/api/plugins/st-mimo-tts";
 const GENERATED_AUDIO_PUBLIC_DIR = "/scripts/extensions/third-party/st-mimo-tts/generated-audio";
 const READING_HIGHLIGHT_NAME = "st-mimo-reading-highlight";
@@ -77,13 +79,13 @@ const DESIGN_TEMPLATES = {
 场景：茶馆里人声渐静，他慢慢展开一段旧日江湖故事。
 
 指导：中低音，醇厚有颗粒感。语速有快慢变化，关键字落点重，段落之间留白，带传统说书的节奏和气势。`,
-    teenBestieNarrator: `性别与年龄：14岁女高中生，少女感明确，声音年轻、轻、亮。
-音色/质感：清脆、稚嫩、干净、薄亮，带一点没完全长开的少女气息；口腔状态放松，尾音轻，气息近，像枕边小声聊天的真实少女声音。
-情绪/语气：默认亲近、随意、带一点笑意和撒娇式熟络；开心会轻轻笑，疑惑会尾音上扬，吐槽会变快，困倦会气息更软，紧张会有短促停顿。整体保持自然起伏和生活化表演。
+    teenBestieNarrator: `性别与年龄：14岁女高中生，少女感明确，声音年轻、清澈、轻亮。
+音色/质感：清脆、纯净、甜美、动听，带一点没完全长开的少女气息；口腔状态放松，尾音轻，气息近，像枕边小声聊天的真实少女声音。
+情绪/语气：默认亲近、随意、带一点笑意和撒娇式熟络；开心会轻轻笑，疑惑会尾音上扬，吐槽会变快，困倦会气息更软，紧张会有短促停顿。整体保持自然起伏、纯净甜感和生活化表演。
 语速/节奏：中快语速，像和闺蜜窝在床上边看手机边聊天；短句轻快，长句按语义自然换气，偶尔有小停顿和轻微拖尾，正文保持原文字句。
 
 角色/人设：14岁女高中生闺蜜型旁白，熟悉用户、说话很自然的同龄感少女。
-说话风格：casual, intimate, colloquial；像趴在床上和闺蜜分享手机里的内容，声音近、轻、放松，有真实聊天的起伏和小表情，正文按原文字句朗读。
+说话风格：casual, intimate, colloquial；像趴在床上和闺蜜分享手机里的内容，声音近、轻、放松，清脆甜美，有真实聊天的起伏和小表情，正文按原文字句朗读。
 场景描写：夜里房间灯光很暗，她和闺蜜并排窝在床上，小声读 SillyTavern 最新正文给对方听。她像聊天一样承接正文里的叙事、对白、心理描写和情绪变化，声音始终服务旁白。
 年代参照：现代校园女生睡前聊天、微信语音、短视频口语感。
 
@@ -96,28 +98,112 @@ const DESIGN_TEMPLATES = {
 - 语速与顿挫：整体中快；轻松段落更灵动，沉重段落略放慢；问句尾音自然上扬，吐槽句可以更快更随意。
 - 气息与共鸣：气息轻、近、软，像在床边小声说话，使用自然口腔共鸣。
 - 咬字肌理：字要清楚，自然连读、轻微拖尾，保留真实聊天里的小停顿。
-- 情绪控制：按文本和音频标签自然变化；开心时带轻笑，疑惑时轻微上扬，疲惫时气息变软，紧张时节奏略快，委屈时声音更轻。原文字句保持完整。`,
+- 情绪控制：按文本和音频标签自然变化；开心时带轻笑，疑惑时轻微上扬，疲惫时气息变软，紧张时节奏略快，委屈时声音更轻。整体清脆纯净、甜美动听，原文字句保持完整。`,
+    youthBright18Narrator: `性别与年龄：18岁年轻女性，少女清澈感仍然明显，同时带更充沛的青春朝气。
+音色/质感：清亮、明快、干净、灵动，声音像晴朗早晨的光，透明且有活力。
+情绪/语气：亲切、开朗、积极，带自然笑意和向上的力量感；轻松段落更明亮，认真段落清晰有分寸。
+语速/节奏：中快语速，短句灵动，长句按语义自然换气；整体节奏轻盈、鲜活、富有生命力。
+
+角色/人设：18岁清亮明快的青春旁白，保留少女的清澈，也多了一份充满朝气、活泼向上的力量感。
+说话风格：自然口语、青春灵动、明快悦耳，像充满精神的年轻朋友在耳边读故事。
+场景描写：她在明亮、轻松的房间里朗读 SillyTavern 最新正文，情绪跟随叙事起伏，声音为故事提供清爽、积极的推动力。
+年代参照：现代校园与日常语音感，青春、清亮、自然。
+
+角色：一位18岁清亮明快的青春旁白。声音清澈、明亮、灵动，有朝气和亲和力。
+
+场景：她自然朗读最新故事正文，承接旁白、对白、心理描写和情绪转折，正文保持原文字句。
+
+指导：
+声音清亮明快、青春灵动。
+- 语速与顿挫：整体中快，轻松句更轻盈，重要信息落点清楚。
+- 气息与共鸣：气息干净、明亮、通透，保持年轻活力。
+- 咬字肌理：咬字清楚，连读自然，尾音轻快。
+- 情绪控制：开心时笑意明亮，疑惑时尾音轻扬，紧张时节奏略快，沉静段落保持清澈。原文字句保持完整。`,
+    loungeAnchor22Narrator: `性别与年龄：22岁年轻女性，声音褪去青涩，带成熟亲和力、知性感和独特磁性。
+音色/质感：妩媚、治愈、慵懒、性感，声线丝滑柔软，低频温暖，尾音松弛，有让人放松的吸引力。
+情绪/语气：温柔、懂得陪伴、情绪价值高；亲密段落更柔软，轻松段落带微笑，安静段落更治愈。
+语速/节奏：中慢到中速，停顿舒展，呼吸放松，句尾轻轻下沉，整体像声音厅主播近距离陪伴。
+
+角色/人设：22岁声音厅主播型旁白，妩媚治愈、慵懒性感，带亲和力、知性感和独特磁性。
+说话风格：intimate, warm, lazy, soothing；像深夜声音厅主播轻声读故事，声音贴近、放松、有情绪价值。
+场景描写：她在安静舒适的房间里，用近距离声音朗读 SillyTavern 最新正文，让故事更柔软、更有陪伴感。
+年代参照：现代声音厅、夜间电台、陪伴型语音直播的松弛感。
+
+角色：一位22岁声音厅主播型旁白。声音妩媚治愈、慵懒性感，温暖、有磁性、让人放松。
+
+场景：她以近距离陪伴感朗读最新故事正文，承接旁白、对白、心理描写和情绪转折，正文保持原文字句。
+
+指导：
+声音妩媚治愈、慵懒性感、亲和知性。
+- 语速与顿挫：整体中慢到中速，停顿舒展，重点词轻轻落下。
+- 气息与共鸣：气息松弛、贴近、温暖，声线丝滑，尾音柔软。
+- 咬字肌理：咬字清楚，连读自然，保留声音厅主播式的轻柔陪伴感。
+- 情绪控制：温柔段落更治愈，暧昧气氛更慵懒，认真段落保持知性，疲惫段落更低柔。原文字句保持完整。`,
 };
 
-const FIXED_NARRATOR_PROFILE = {
-    displayId: FIXED_NARRATOR_DISPLAY_ID,
-    name: "固定旁白-14岁女高中生",
-    avatar: "",
-    director: "固定用于最新 LLM 回复朗读。14岁女高中生，清脆稚嫩、生活化、像和闺蜜窝在床上小声聊天；朗读范围限定为正文。",
-    voiceDesignPrompt: DESIGN_TEMPLATES.teenBestieNarrator,
-    deliveryInstruction: "朗读范围限定为正文叙事、对白、心理描写和可听音频标签。保持14岁女高中生声线：清脆、稚嫩、轻快、自然，像和闺蜜窝在床上小声聊天。情绪跟随正文和音频标签自然变化，原文字句保持完整。",
-    styleRole: "14岁女高中生闺蜜型旁白，熟悉用户、自然亲近的同龄感少女。",
-    styleScene: "夜里房间灯光很暗，她和闺蜜并排窝在床上，小声读 SillyTavern 最新正文给对方听。",
-    styleGuidance: "朗读范围限定为正文叙事、对白、心理描写和可听音频标签。情绪跟随正文和动态音频标签自然变化，原文字句保持完整。",
-    stylePrefix: "",
-    model: MIMO_MODELS.VOICE_DESIGN,
-    presetVoice: "mimo_default",
-    format: "wav",
-    optimizeTextPreview: false,
-    voiceCloneAudioData: "",
-    voiceCloneAudioName: "",
-    voiceCloneAudioMime: "",
-};
+const FIXED_NARRATOR_PROFILES = [
+    {
+        displayId: FIXED_NARRATOR_DISPLAY_ID,
+        legacyDisplayIds: ["NARRATOR-TAIWAN-COLLEGE"],
+        name: "固定旁白-14岁清脆甜美",
+        legacyNames: ["固定旁白-14岁女高中生"],
+        avatar: "",
+        director: "固定用于最新 LLM 回复朗读。14岁女高中生，清脆、纯净、甜美、动听，像和闺蜜窝在床上小声聊天；朗读范围限定为正文。",
+        voiceDesignPrompt: DESIGN_TEMPLATES.teenBestieNarrator,
+        deliveryInstruction: "朗读范围限定为正文叙事、对白、心理描写和可听音频标签。保持14岁女高中生声线：清脆、纯净、甜美、轻快、自然，像和闺蜜窝在床上小声聊天。情绪跟随正文和音频标签自然变化，原文字句保持完整。",
+        styleRole: "14岁清脆甜美型旁白，熟悉用户、自然亲近的同龄感少女。",
+        styleScene: "夜里房间灯光很暗，她和闺蜜并排窝在床上，小声读 SillyTavern 最新正文给对方听。",
+        styleGuidance: "朗读范围限定为正文叙事、对白、心理描写和可听音频标签。情绪跟随正文和动态音频标签自然变化，整体清脆纯净、甜美动听，原文字句保持完整。",
+        stylePrefix: "",
+        model: MIMO_MODELS.VOICE_DESIGN,
+        presetVoice: "mimo_default",
+        format: "wav",
+        optimizeTextPreview: false,
+        voiceCloneAudioData: "",
+        voiceCloneAudioName: "",
+        voiceCloneAudioMime: "",
+    },
+    {
+        displayId: FIXED_NARRATOR_18_DISPLAY_ID,
+        name: "固定旁白-18岁清亮明快",
+        avatar: "",
+        director: "固定用于最新 LLM 回复朗读。18岁清亮明快、青春灵动，保留少女清澈，又带朝气、活泼向上的力量感；朗读范围限定为正文。",
+        voiceDesignPrompt: DESIGN_TEMPLATES.youthBright18Narrator,
+        deliveryInstruction: "朗读范围限定为正文叙事、对白、心理描写和可听音频标签。保持18岁清亮明快、青春灵动的声线；情绪跟随正文和音频标签自然变化，原文字句保持完整。",
+        styleRole: "18岁清亮明快型旁白，青春灵动、清澈有朝气。",
+        styleScene: "明亮轻松的房间里，她像充满精神的年轻朋友一样朗读 SillyTavern 最新正文。",
+        styleGuidance: "朗读范围限定为正文叙事、对白、心理描写和可听音频标签。情绪自然明亮，整体清澈、朝气、灵动，原文字句保持完整。",
+        stylePrefix: "",
+        model: MIMO_MODELS.VOICE_DESIGN,
+        presetVoice: "mimo_default",
+        format: "wav",
+        optimizeTextPreview: false,
+        voiceCloneAudioData: "",
+        voiceCloneAudioName: "",
+        voiceCloneAudioMime: "",
+    },
+    {
+        displayId: FIXED_NARRATOR_22_DISPLAY_ID,
+        name: "固定旁白-22岁声音厅主播",
+        avatar: "",
+        director: "固定用于最新 LLM 回复朗读。22岁声音厅主播，妩媚治愈、慵懒性感，带亲和力、知性感和独特磁性；朗读范围限定为正文。",
+        voiceDesignPrompt: DESIGN_TEMPLATES.loungeAnchor22Narrator,
+        deliveryInstruction: "朗读范围限定为正文叙事、对白、心理描写和可听音频标签。保持22岁声音厅主播声线：妩媚治愈、慵懒性感、温暖有磁性。情绪跟随正文和音频标签自然变化，原文字句保持完整。",
+        styleRole: "22岁声音厅主播型旁白，妩媚治愈、慵懒性感，带亲和力、知性感和独特磁性。",
+        styleScene: "安静舒适的房间里，她以近距离陪伴感朗读 SillyTavern 最新正文。",
+        styleGuidance: "朗读范围限定为正文叙事、对白、心理描写和可听音频标签。情绪价值高，整体温柔、松弛、有磁性，原文字句保持完整。",
+        stylePrefix: "",
+        model: MIMO_MODELS.VOICE_DESIGN,
+        presetVoice: "mimo_default",
+        format: "wav",
+        optimizeTextPreview: false,
+        voiceCloneAudioData: "",
+        voiceCloneAudioName: "",
+        voiceCloneAudioMime: "",
+    },
+];
+const FIXED_NARRATOR_PROFILE = FIXED_NARRATOR_PROFILES[0];
+const FIXED_NARRATOR_DISPLAY_IDS = new Set(FIXED_NARRATOR_PROFILES.map((profile) => profile.displayId));
 
 const KNOWN_ROLE_VOICE_PRESETS = [
     {
@@ -477,35 +563,21 @@ function migrateLibrary(settings) {
     settings.syncSkill.writeRegexToSillyTavern = false;
     settings.optimizeTextPreview = false;
 
-    if (!settings.libraries.initialized) {
-        const narrator = createProfile("narrator", {
-            displayId: "NARRATOR-DEFAULT",
-            name: "默认旁白",
-            avatar: "",
-            director: "用于旁白、系统叙述、环境描写和非角色台词。",
-            voiceDesignPrompt: settings.voiceDesignPrompt || DESIGN_TEMPLATES.radio,
-            deliveryInstruction: settings.deliveryInstruction,
-            styleRole: settings.styleRole,
-            styleScene: settings.styleScene,
-            styleGuidance: settings.styleGuidance || settings.deliveryInstruction,
-            stylePrefix: "",
-            model: settings.model,
-            presetVoice: settings.presetVoice,
-            format: settings.format,
-            optimizeTextPreview: false,
-        });
+    const initializedNow = !settings.libraries.initialized;
+    if (initializedNow) {
         const group = createGroup({ displayId: "GROUP-DEFAULT", name: "默认角色组" });
 
-        settings.libraries.narrators.push(narrator);
         settings.libraries.roleGroups.push(group);
         settings.activeProfile = {
             type: "narrator",
-            narratorId: narrator.uid,
+            narratorId: "",
             groupId: "",
             roleId: "",
         };
         settings.libraries.initialized = true;
     }
+
+    settings.libraries.narrators = settings.libraries.narrators.filter((profile) => !isLegacyDefaultNarrator(profile));
 
     for (const profile of [
         ...settings.libraries.narrators,
@@ -514,24 +586,17 @@ function migrateLibrary(settings) {
         normalizeProfile(profile, settings);
     }
 
-    const fixedNarrator = ensureFixedNarrator(settings);
-    settings.activeProfile = {
-        type: "narrator",
-        narratorId: fixedNarrator.uid,
-        groupId: "",
-        roleId: "",
-    };
-    appState.editingNarratorId = fixedNarrator.uid;
-
+    const fixedNarrators = ensureFixedNarrators(settings);
     const firstNarrator = settings.libraries.narrators[0];
     if (!settings.activeProfile) {
         settings.activeProfile = cloneData(DEFAULT_SETTINGS.activeProfile);
     }
-    if (!settings.activeProfile.narratorId && firstNarrator) {
+    if (initializedNow || !getNarrator(settings, settings.activeProfile.narratorId)) {
         settings.activeProfile.type = "narrator";
-        settings.activeProfile.narratorId = firstNarrator.uid;
+        settings.activeProfile.narratorId = fixedNarrators[0]?.uid || firstNarrator?.uid || "";
     }
 
+    if (!appState.editingNarratorId && settings.activeProfile.narratorId) appState.editingNarratorId = settings.activeProfile.narratorId;
     if (!appState.editingNarratorId && firstNarrator) appState.editingNarratorId = firstNarrator.uid;
     const firstGroup = settings.libraries.roleGroups[0];
     if (!appState.editingGroupId && firstGroup) appState.editingGroupId = firstGroup.uid;
@@ -539,53 +604,93 @@ function migrateLibrary(settings) {
     if (activeGroup && !appState.editingRoleId && activeGroup.roles?.[0]) appState.editingRoleId = activeGroup.roles[0].uid;
 }
 
-function ensureFixedNarrator(settings) {
-    let narrator = settings.libraries.narrators.find((profile) => profile.displayId === FIXED_NARRATOR_DISPLAY_ID)
-        || settings.libraries.narrators.find((profile) => profile.name === FIXED_NARRATOR_PROFILE.name);
+function ensureFixedNarrators(settings) {
+    const narrators = [];
+    for (const fixedProfile of FIXED_NARRATOR_PROFILES) {
+        narrators.push(ensureFixedNarratorProfile(settings, fixedProfile));
+    }
+    settings.libraries.narrators = [
+        ...narrators,
+        ...settings.libraries.narrators.filter((profile) => !isFixedNarratorProfile(profile)),
+    ];
+    return narrators;
+}
 
+function ensureFixedNarratorProfile(settings, fixedProfile) {
+    let narrator = settings.libraries.narrators.find((profile) => profile.displayId === fixedProfile.displayId)
+        || settings.libraries.narrators.find((profile) => fixedProfile.legacyDisplayIds?.includes(profile.displayId))
+        || settings.libraries.narrators.find((profile) => profile.name === fixedProfile.name)
+        || settings.libraries.narrators.find((profile) => fixedProfile.legacyNames?.includes(profile.name));
     if (!narrator) {
-        narrator = createProfile("narrator", FIXED_NARRATOR_PROFILE);
+        narrator = createProfile("narrator", fixedProfile);
         settings.libraries.narrators.unshift(narrator);
     }
 
-    narrator.displayId = FIXED_NARRATOR_DISPLAY_ID;
-    narrator.name = FIXED_NARRATOR_PROFILE.name;
-    narrator.director = narrator.director || FIXED_NARRATOR_PROFILE.director;
-    if (!narrator.voiceDesignPrompt || isLegacyFixedNarratorVoicePrompt(narrator.voiceDesignPrompt)) {
-        narrator.voiceDesignPrompt = FIXED_NARRATOR_PROFILE.voiceDesignPrompt;
+    narrator.displayId = fixedProfile.displayId;
+    narrator.name = fixedProfile.name;
+    if (!narrator.director || isLegacyFixedNarratorDirector(narrator.director, fixedProfile)) {
+        narrator.director = fixedProfile.director;
     }
-    if (!narrator.deliveryInstruction || isLegacyFixedNarratorGuidance(narrator.deliveryInstruction)) {
-        narrator.deliveryInstruction = FIXED_NARRATOR_PROFILE.deliveryInstruction;
+    if (!narrator.voiceDesignPrompt || isLegacyFixedNarratorVoicePrompt(narrator.voiceDesignPrompt, fixedProfile)) {
+        narrator.voiceDesignPrompt = fixedProfile.voiceDesignPrompt;
     }
-    if (!narrator.styleRole || isLegacyFixedNarratorRole(narrator.styleRole)) {
-        narrator.styleRole = FIXED_NARRATOR_PROFILE.styleRole;
+    if (!narrator.deliveryInstruction || isLegacyFixedNarratorGuidance(narrator.deliveryInstruction, fixedProfile)) {
+        narrator.deliveryInstruction = fixedProfile.deliveryInstruction;
     }
-    narrator.styleScene = narrator.styleScene || FIXED_NARRATOR_PROFILE.styleScene;
-    if (!narrator.styleGuidance || isLegacyFixedNarratorGuidance(narrator.styleGuidance)) {
-        narrator.styleGuidance = FIXED_NARRATOR_PROFILE.styleGuidance;
+    if (!narrator.styleRole || isLegacyFixedNarratorRole(narrator.styleRole, fixedProfile)) {
+        narrator.styleRole = fixedProfile.styleRole;
+    }
+    narrator.styleScene = narrator.styleScene || fixedProfile.styleScene;
+    if (!narrator.styleGuidance || isLegacyFixedNarratorGuidance(narrator.styleGuidance, fixedProfile)) {
+        narrator.styleGuidance = fixedProfile.styleGuidance;
     }
     narrator.stylePrefix = narrator.stylePrefix || "";
     narrator.createdAt = narrator.createdAt || new Date().toISOString();
     narrator.lockedNarrator = true;
     narrator.syncGenerated = false;
-    normalizeProfile(narrator, FIXED_NARRATOR_PROFILE);
+    normalizeProfile(narrator, fixedProfile);
 
     return narrator;
 }
 
-function isLegacyFixedNarratorVoicePrompt(value) {
-    const text = String(value || "");
-    return text.includes("14岁女高中生，少女感明确") && !text.includes("原文字句保持完整");
+function ensureFixedNarrator(settings) {
+    const fixedNarrators = ensureFixedNarrators(settings);
+    const activeNarrator = getNarrator(settings, settings.activeProfile?.narratorId);
+    return activeNarrator || fixedNarrators[0] || settings.libraries.narrators[0] || null;
 }
 
-function isLegacyFixedNarratorGuidance(value) {
-    const text = String(value || "");
-    return text.includes("14岁女高中生") && !text.includes("朗读范围限定");
+function isFixedNarratorProfile(profile) {
+    return Boolean(profile && FIXED_NARRATOR_DISPLAY_IDS.has(profile.displayId));
 }
 
-function isLegacyFixedNarratorRole(value) {
+function isLegacyDefaultNarrator(profile) {
+    return profile?.displayId === "NARRATOR-DEFAULT"
+        && profile?.name === "默认旁白"
+        && String(profile?.director || "").includes("用于旁白、系统叙述、环境描写和非角色台词");
+}
+
+function isLegacyFixedNarratorVoicePrompt(value, fixedProfile = FIXED_NARRATOR_PROFILE) {
     const text = String(value || "");
-    return text.includes("14岁女高中生闺蜜型旁白") && !text.includes("熟悉用户、自然亲近");
+    if (fixedProfile.displayId !== FIXED_NARRATOR_DISPLAY_ID) return false;
+    return text.includes("14岁女高中生，少女感明确") && !text.includes("清脆、纯净、甜美");
+}
+
+function isLegacyFixedNarratorDirector(value, fixedProfile = FIXED_NARRATOR_PROFILE) {
+    const text = String(value || "");
+    if (fixedProfile.displayId !== FIXED_NARRATOR_DISPLAY_ID) return false;
+    return text.includes("14岁女高中生") && !text.includes("清脆、纯净、甜美");
+}
+
+function isLegacyFixedNarratorGuidance(value, fixedProfile = FIXED_NARRATOR_PROFILE) {
+    const text = String(value || "");
+    if (fixedProfile.displayId !== FIXED_NARRATOR_DISPLAY_ID) return false;
+    return text.includes("14岁女高中生") && !text.includes("清脆、纯净、甜美");
+}
+
+function isLegacyFixedNarratorRole(value, fixedProfile = FIXED_NARRATOR_PROFILE) {
+    const text = String(value || "");
+    if (fixedProfile.displayId !== FIXED_NARRATOR_DISPLAY_ID) return false;
+    return text.includes("14岁") && !text.includes("清脆甜美");
 }
 
 function normalizeProfile(profile, fallback = DEFAULT_SETTINGS) {
@@ -946,12 +1051,13 @@ function getPreferredRoleGroup(settings = getSettings()) {
 }
 
 function getActiveProfile(settings = getSettings()) {
-    const narrator = ensureFixedNarrator(settings);
+    ensureFixedNarrators(settings);
     const current = settings.activeProfile || {};
+    const narrator = getNarrator(settings, current.narratorId) || ensureFixedNarrator(settings);
     settings.activeProfile = {
         ...current,
         type: "narrator",
-        narratorId: narrator.uid,
+        narratorId: narrator?.uid || "",
         groupId: current.groupId || getPreferredRoleGroup(settings)?.uid || "",
         roleId: current.roleId || "",
     };
@@ -2297,14 +2403,14 @@ function deleteSelectedNarrators() {
     const settings = getSettings();
     if (!appState.selectedNarrators.size) return;
     settings.libraries.narrators = settings.libraries.narrators.filter((profile) => {
-        if (profile.displayId === FIXED_NARRATOR_DISPLAY_ID) return true;
+        if (isFixedNarratorProfile(profile)) return true;
         return !appState.selectedNarrators.has(profile.uid);
     });
     appState.selectedNarrators.clear();
     const fixedNarrator = ensureFixedNarrator(settings);
-    appState.editingNarratorId = fixedNarrator.uid;
+    if (!getNarrator(settings, appState.editingNarratorId)) appState.editingNarratorId = fixedNarrator?.uid || "";
     if (settings.activeProfile.type === "narrator" && !getNarrator(settings, settings.activeProfile.narratorId)) {
-        settings.activeProfile.narratorId = fixedNarrator.uid;
+        settings.activeProfile.narratorId = fixedNarrator?.uid || "";
     }
     saveSettings({ render: true });
 }
@@ -2398,15 +2504,16 @@ function activateProfile(type, id) {
     if (type === "narrator") {
         const narrator = getNarrator(settings, id || appState.editingNarratorId) || fixedNarrator;
         if (!narrator) return;
-        settings.activeProfile = { type: "narrator", narratorId: fixedNarrator.uid, groupId: "", roleId: "" };
+        appState.editingNarratorId = narrator.uid;
+        settings.activeProfile = { type: "narrator", narratorId: narrator.uid, groupId: "", roleId: "" };
     } else {
         const group = getGroup(settings, appState.editingGroupId);
         const role = getRole(group, id || appState.editingRoleId);
         if (!group || !role) return;
         appState.editingGroupId = group.uid;
         appState.editingRoleId = role.uid;
-        settings.activeProfile = { type: "narrator", narratorId: fixedNarrator.uid, groupId: "", roleId: "" };
-        notify("info", "播放器已固定使用14岁女高中生旁白，角色音色不会被设为朗读音色。");
+        settings.activeProfile = { type: "narrator", narratorId: fixedNarrator?.uid || "", groupId: "", roleId: "" };
+        notify("info", `播放器使用当前旁白：${fixedNarrator?.name || "旁白"}`);
     }
     saveSettings({ render: true });
 }
