@@ -45,7 +45,7 @@ MiMo speech synthesis uses `POST /chat/completions`.
 
 Official reference: https://platform.xiaomimimo.com/docs/zh-CN/usage-guide/speech-synthesis-v2.5
 
-The floating player's `+10/-10` buttons adjust persistent HTMLAudio playback speed after audio generation. They do not change MiMo synthesis speed or voice design text.
+The floating player's `+10/-10` buttons adjust persistent HTMLAudio playback speed after audio generation. They do not change MiMo synthesis speed or voice design text. The saved playback speed is re-applied when each audio element loads, starts, resumes, or emits a rate-change event.
 
 Local reference used while reducing: `D:\Ai\2ai-voice-console`.
 

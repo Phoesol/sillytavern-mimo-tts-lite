@@ -739,11 +739,35 @@ function getTtsSynthesisSpeedRate(settings = getSettings()) {
 function applyAudioElementPlaybackRate(audio, value = getPlaybackRate()) {
     if (!audio) return;
     const rate = normalizeTtsSpeedRate(value);
-    audio.defaultPlaybackRate = rate;
-    audio.playbackRate = rate;
+    if (Math.abs(Number(audio.defaultPlaybackRate || 1) - rate) > 0.001) {
+        audio.defaultPlaybackRate = rate;
+    }
+    if (Math.abs(Number(audio.playbackRate || 1) - rate) > 0.001) {
+        audio.playbackRate = rate;
+    }
     if ("preservesPitch" in audio) audio.preservesPitch = true;
     if ("mozPreservesPitch" in audio) audio.mozPreservesPitch = true;
     if ("webkitPreservesPitch" in audio) audio.webkitPreservesPitch = true;
+}
+
+function bindAudioPlaybackRate(audio) {
+    if (!audio) return;
+    const syncRate = () => applyAudioElementPlaybackRate(audio, getPlaybackRate());
+    if (audio.dataset?.stMimoPlaybackRateBound === "true") {
+        syncRate();
+        return;
+    }
+    const deferredSyncRate = () => {
+        syncRate();
+        window.requestAnimationFrame?.(syncRate);
+        window.setTimeout(syncRate, 0);
+        window.setTimeout(syncRate, 120);
+    };
+    for (const eventName of ["loadedmetadata", "canplay", "play", "playing", "ratechange", "seeked"]) {
+        audio.addEventListener(eventName, deferredSyncRate);
+    }
+    if (audio.dataset) audio.dataset.stMimoPlaybackRateBound = "true";
+    deferredSyncRate();
 }
 
 function setTtsSpeedRate(value, options = {}) {
@@ -4236,6 +4260,7 @@ async function playCurrentSegment() {
         activeAudio = new Audio();
         activeAudio.src = activeAudioUrl;
         applyAudioElementPlaybackRate(activeAudio);
+        bindAudioPlaybackRate(activeAudio);
         const highlightResult = startReadingHighlight(activeAudio, segmentRawText, {
             sourceMessageId: playbackState.sourceMessageId,
             preferredStart: playbackState.currentIndex === 0 ? 0 : playbackState.highlightCursor,
@@ -4265,6 +4290,7 @@ async function playCurrentSegment() {
             setStatus("音频播放失败", "error");
         };
         await activeAudio.play();
+        applyAudioElementPlaybackRate(activeAudio);
         playbackState.mode = "playing";
         setStatus(`正在播放 ${playbackState.currentIndex + 1}/${playbackState.segments.length} · ${segmentSpeaker}`, "ok");
     } catch (error) {
@@ -4296,7 +4322,9 @@ async function togglePlayerPlayback() {
     }
 
     if (playbackState.mode === "paused" && activeAudio) {
+        applyAudioElementPlaybackRate(activeAudio);
         await activeAudio.play();
+        applyAudioElementPlaybackRate(activeAudio);
         playbackState.mode = "playing";
         setStatus(`正在播放 ${playbackState.currentIndex + 1}/${playbackState.segments.length} · ${getCurrentPlaybackSpeaker()}`, "ok");
         return;
@@ -4351,9 +4379,11 @@ async function synthesizeAndPlay(text, options = {}) {
         activeAudio = options.attachPreview ? byId("st-mimo-preview-audio") : new Audio();
         activeAudio.src = activeAudioUrl;
         applyAudioElementPlaybackRate(activeAudio, getPlaybackRate(settings));
+        bindAudioPlaybackRate(activeAudio);
         activeAudio.onended = () => setStatus("播放完成", "ok");
         activeAudio.onerror = () => setStatus("音频播放失败", "error");
         await activeAudio.play();
+        applyAudioElementPlaybackRate(activeAudio);
         setStatus("正在播放", "ok");
     } catch (error) {
         if (error.name === "AbortError") {
